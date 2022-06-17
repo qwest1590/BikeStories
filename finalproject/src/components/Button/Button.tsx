@@ -27,16 +27,12 @@ const Btn = styled.button`
 interface IBtnProps {
   name: string;
   color: string;
+  onClick?(): void;
 }
 
-export const Button = ({ name, color }: IBtnProps) => {
-  const navigate = useNavigate();
-
-  const onClickHandler = () => {
-    navigate("/login");
-  };
+export const Button = ({ name, color, onClick }: IBtnProps) => {
   return (
-    <Btn color={color} onClick={onClickHandler}>
+    <Btn color={color} onClick={onClick}>
       {name}
     </Btn>
   );

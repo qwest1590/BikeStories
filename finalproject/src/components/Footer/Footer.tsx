@@ -20,12 +20,17 @@ const FooterWrapper = styled.div`
     color: black;
     font-size: 1.7rem;
     text-decoration: none;
-    transition: color 1.3s linear;
+    transition: all 1.3s linear;
     @media (max-width: 500px) {
       font-size: 1.1rem;
     }
     &:hover {
       color: #0dad95;
+      border-bottom: 1px solid #0dad95;
+    }
+    &:focus {
+      border-bottom: 1px solid #0dad95;
+      outline: none;
     }
   }
 `;

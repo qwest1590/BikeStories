@@ -1,4 +1,5 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { Button } from "../Button/Button";
 import { Slider } from "../Slider/Slider";
@@ -207,6 +208,7 @@ const RoadWish = styled.div`
 `;
 
 export const Main = () => {
+  const navigate = useNavigate();
   return (
     <MainWrapper>
       <h1 style={{ gridArea: "1/1/1/4" }}>
@@ -249,7 +251,11 @@ export const Main = () => {
           form.&#11015; <br></br>
           Let's help the world get a little better!
         </p>
-        <Button name={"Report a thief"} color="#14c74a"></Button>
+        <Button
+          name={"Report a thief"}
+          color="#14c74a"
+          onClick={() => navigate("/report")}
+        ></Button>
       </AboutTheft>
       <RoadWish>Have a good road and interesting stories!</RoadWish>
     </MainWrapper>

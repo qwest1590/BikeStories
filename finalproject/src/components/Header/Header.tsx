@@ -1,8 +1,10 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import { Button } from "../Button/Button";
 import logo from "../../images/logo.jpg";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { LabelInput } from "../Registration/Registration";
+import { ErrorMessage } from "../Registration/Registration";
 
 const HeaderWrapper = styled.div`
   height: 100px;
@@ -13,7 +15,7 @@ const HeaderWrapper = styled.div`
   gap: 10px;
 `;
 
-const CompanyName = styled.span`
+export const CompanyName = styled.span`
   font-family: fantasy;
   font-size: 2.5rem;
   background: linear-gradient(to right, #1526bd 0%, #c616cc 50%, #6006d6 100%);
@@ -24,7 +26,7 @@ const CompanyName = styled.span`
   }
 `;
 
-const Logo = styled.div`
+export const Logo = styled.div`
   padding-left: 10px;
   height: 70px;
   min-width: 90px;
@@ -86,7 +88,66 @@ const RegSpan = styled.span`
   }
 `;
 
+const SideMenu = styled.nav`
+  display: flex;
+  flex-flow: column;
+  height: 320px;
+  position: absolute;
+  width: 375px;
+  top: 0px;
+  right: 3px;
+  z-index: 3;
+  border-radius: 15px;
+  background: linear-gradient(#3a9ad6, #3148ce, #6006d6);
+  opacity: 1;
+  transform: translateY(-100%);
+  transition: all 1s cubic-bezier(0.645, 0.045, 0.355, 1);
+  padding: 10px;
+  @media (max-width: 500px) {
+    width: 270px;
+    div {
+      width: 250px;
+    }
+  }
+  &.active {
+    transform: translateY(0%);
+  }
+  h2 {
+    text-align: center;
+    font-size: 2rem;
+    font-family: math;
+  }
+  input {
+    width: 355px;
+    @media (max-width: 500px) {
+      width: 250px;
+    }
+  }
+`;
+
+const ButtonWrapper = styled.div`
+  display: flex;
+  justify-content: space-evenly;
+  margin-top: 20px;
+  button {
+    &:first-of-type:hover {
+      box-shadow: inset 0 0 0 40px #c71a14;
+    }
+  }
+`;
+
 export const Header = () => {
+  const [isOpen, setIsopen] = useState(false);
+  const [userData, setUserData] = useState({ email: "", password: "" });
+  const [errorMessage, setErrorMessage] = useState({
+    visible: false,
+    message: "",
+  });
+
+  const onClickHandler = () => {
+    setIsopen(!isOpen);
+  };
+
   return (
     <HeaderWrapper>
       <Logo>
@@ -94,10 +155,65 @@ export const Header = () => {
       </Logo>
       <CompanyName> BikeStories</CompanyName>
       <LogAndRegWrapper>
-        <Button name="Login" color="#02CCAF"></Button>
+        <Button name="Login" color="#02CCAF" onClick={onClickHandler}></Button>
         <RegSpan>
           <Link to={"/registration"}>Registration</Link>
         </RegSpan>
+        <SideMenu className={isOpen ? "active" : ""}>
+          <h2>
+            {" "}
+            <i>Welcome</i>
+          </h2>
+          <ErrorMessage
+            style={
+              errorMessage.visible
+                ? { visibility: "initial" }
+                : { visibility: "hidden" }
+            }
+          ></ErrorMessage>
+          <LabelInput>
+            <label>
+              {" "}
+              Enter your email: <br></br>
+              <input
+                type={"text"}
+                onChange={(e) =>
+                  setUserData((prevState) => ({
+                    ...prevState,
+                    email: e.target.value,
+                  }))
+                }
+              ></input>
+              <br></br>
+            </label>
+          </LabelInput>
+          <LabelInput>
+            <label>
+              Enter your password: <br></br>
+              <input
+                type={"password"}
+                onChange={(e) =>
+                  setUserData((prevState) => ({
+                    ...prevState,
+                    password: e.target.value,
+                  }))
+                }
+              ></input>
+            </label>
+          </LabelInput>
+          <ButtonWrapper>
+            <Button
+              name="Close"
+              color="#cc4c02"
+              onClick={onClickHandler}
+            ></Button>
+            <Button
+              name="Log In"
+              color="#02CCAF"
+              onClick={onClickHandler}
+            ></Button>
+          </ButtonWrapper>
+        </SideMenu>
       </LogAndRegWrapper>
     </HeaderWrapper>
   );

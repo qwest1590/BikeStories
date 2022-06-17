@@ -1,10 +1,10 @@
 import React from "react";
-import { Header } from "./components/Header/Header";
 import styled from "styled-components";
 import { Routes, Route } from "react-router-dom";
-import { Main } from "./components/Main.tsx/Main";
-import { Footer } from "./components/Footer/Footer";
 import background from "./images/bicycleRiding.jpg";
+import { Registration } from "./components/Registration/Registration";
+import { Home } from "./components/Home/Home";
+import { ReportPage } from "./components/ReportPage/ReportPage";
 const colors = {
   lightblue: "#3a9ad6",
   darkblue: "#1526BD",
@@ -48,23 +48,22 @@ const AppWrapper = styled.div`
   z-index: 1;
 `;
 
-const Background = styled.img`
+export const Background = styled.img`
   opacity: 0.1;
   position: absolute;
   height: 100%;
   width: 100%;
+  pointer-events: none;
 `;
 
 function App() {
   return (
     <AppWrapper>
       <Background src={background} alt="background"></Background>
-      <Header></Header>
-      <Main></Main>
-      <Footer></Footer>
       <Routes>
-        <Route path="/" element={<AppWrapper />} />
-        <Route path="/login" />
+        <Route path="/" element={<Home />} />
+        <Route path="/registration" element={<Registration />} />
+        <Route path="/report" element={<ReportPage />} />
       </Routes>
     </AppWrapper>
   );
