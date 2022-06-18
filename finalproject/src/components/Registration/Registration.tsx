@@ -13,7 +13,7 @@ const PageWrapper = styled.div`
 
 export const FormWrapper = styled.div`
   height: 650px;
-  width: 600px;
+  width: 620px;
   background: linear-gradient(#d4e8f5, #abc9db, #58a9db);
   border-radius: 10px;
   display: flex;
@@ -29,7 +29,7 @@ export const FormWrapper = styled.div`
     align-self: center;
     width: 580px;
   }
-  @media (max-width: 610px) {
+  @media (max-width: 640px) {
     width: 375px;
     form {
       justify-self: center;
@@ -61,7 +61,7 @@ export const LabelInput = styled.div`
     font-size: 1.2rem;
   }
   input {
-    width: 564px;
+    width: 560px;
     height: 30px;
     margin-top: 8px;
     border-radius: 5px;
@@ -69,7 +69,13 @@ export const LabelInput = styled.div`
     filter: drop-shadow(0 0 0.75rem #58a9db);
     padding-left: 15px;
     font-size: 1.2rem;
-    @media (max-width: 610px) {
+    &.short {
+      width: 355px;
+      @media (max-width: 500px) {
+        width: 250px;
+      }
+    }
+    @media (max-width: 640px) {
       width: 335px;
     }
     &:focus {

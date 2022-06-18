@@ -207,6 +207,25 @@ const RoadWish = styled.div`
   }
 `;
 
+const StuffPanel = styled.div`
+  width: 215px;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  border-radius: 5px;
+  grid-area: 3/3;
+  align-self: flex-end;
+  justify-self: flex-end;
+  margin-right: 20px;
+  padding: 5px;
+  @media (max-width: 960px) {
+    grid-area: 2/1/2/4;
+    align-self: flex-start;
+    justify-self: center;
+  }
+`;
+
 export const Main = () => {
   const navigate = useNavigate();
   return (
@@ -257,6 +276,18 @@ export const Main = () => {
           onClick={() => navigate("/report")}
         ></Button>
       </AboutTheft>
+      <StuffPanel>
+        <Button
+          color="#02CCAF"
+          name="Archieve"
+          onClick={() => navigate("/archieve")}
+        ></Button>
+        <Button
+          color="#02CCAF"
+          name="Stuff"
+          onClick={() => navigate("/stuff")}
+        ></Button>
+      </StuffPanel>
       <RoadWish>Have a good road and interesting stories!</RoadWish>
     </MainWrapper>
   );

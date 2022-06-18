@@ -5,6 +5,8 @@ import background from "./images/bicycleRiding.jpg";
 import { Registration } from "./components/Registration/Registration";
 import { Home } from "./components/Home/Home";
 import { ReportPage } from "./components/ReportPage/ReportPage";
+import { TheftArchieve } from "./components/TheftArchieve/TheftArchieve";
+import { Stuff } from "./components/Stuff/Stuff";
 const colors = {
   lightblue: "#3a9ad6",
   darkblue: "#1526BD",
@@ -63,7 +65,9 @@ function App() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/registration" element={<Registration />} />
-        <Route path="/report" element={<ReportPage />} />
+        <Route path="/report" element={<ReportPage approved={true} />} />
+        <Route path="/archieve" element={<TheftArchieve />} />
+        <Route path="/stuff" element={<Stuff />} />
       </Routes>
     </AppWrapper>
   );

@@ -101,7 +101,7 @@ const SideMenu = styled.nav`
   background: linear-gradient(#3a9ad6, #3148ce, #6006d6);
   opacity: 1;
   transform: translateY(-100%);
-  transition: all 1s cubic-bezier(0.645, 0.045, 0.355, 1);
+  transition: transform 1s cubic-bezier(0.645, 0.045, 0.355, 1);
   padding: 10px;
   @media (max-width: 500px) {
     width: 270px;
@@ -116,12 +116,6 @@ const SideMenu = styled.nav`
     text-align: center;
     font-size: 2rem;
     font-family: math;
-  }
-  input {
-    width: 355px;
-    @media (max-width: 500px) {
-      width: 250px;
-    }
   }
 `;
 
@@ -176,6 +170,7 @@ export const Header = () => {
               {" "}
               Enter your email: <br></br>
               <input
+                className="short"
                 type={"text"}
                 onChange={(e) =>
                   setUserData((prevState) => ({
@@ -191,6 +186,7 @@ export const Header = () => {
             <label>
               Enter your password: <br></br>
               <input
+                className="short"
                 type={"password"}
                 onChange={(e) =>
                   setUserData((prevState) => ({
