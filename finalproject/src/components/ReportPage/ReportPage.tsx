@@ -117,7 +117,7 @@ export const ReportPage = (props: IreportPageProps) => {
           </LabelInput>
           <LabelInput>
             <label>
-              FirstName,LastName:
+              FullName:
               <input type={"text"}></input>
             </label>
           </LabelInput>

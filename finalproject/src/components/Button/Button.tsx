@@ -1,5 +1,5 @@
-import React from "react";
-import { useNavigate } from "react-router-dom";
+import React, { ReactElement } from "react";
+
 import styled from "styled-components";
 
 const Btn = styled.button`
@@ -15,12 +15,15 @@ const Btn = styled.button`
   font-size: 1.4rem;
   font-style: italic;
   font-weight: 500;
-  transition: box-shadow 0.5s linear;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: box-shadow 0.2s linear;
   &:hover {
     box-shadow: inset 0 0 0 23px #14c74a;
   }
   &:focus {
-    outline: 2px ridge #3a9ad6;
+    outline: 1px ridge #3a9ad6;
   }
 `;
 
@@ -28,12 +31,24 @@ interface IBtnProps {
   name: string;
   color: string;
   onClick?(): void;
+  children?: ReactElement;
+  isLoading?: boolean;
 }
 
-export const Button = ({ name, color, onClick }: IBtnProps) => {
+export const Button = ({
+  name,
+  color,
+  onClick,
+  children,
+  isLoading,
+}: IBtnProps) => {
   return (
-    <Btn color={color} onClick={onClick}>
-      {name}
+    <Btn
+      color={color}
+      onClick={onClick}
+      style={isLoading ? { pointerEvents: "none" } : { pointerEvents: "all" }}
+    >
+      {isLoading ? children : name}
     </Btn>
   );
 };

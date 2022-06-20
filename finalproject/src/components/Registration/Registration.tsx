@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { Background } from "../../App";
 import background from "../../images/bicycleRiding.jpg";
@@ -6,6 +6,9 @@ import { Button } from "../Button/Button";
 import { Logo, CompanyName } from "../Header/Header";
 import logo from "../../images/logo.jpg";
 import { useNavigate } from "react-router-dom";
+import { clearLastError, signUpUser } from "../../redux/actions/actions";
+import { useAppSelector, useTypedDispatch } from "../..";
+import { Spinner } from "../Spinner/Spinner";
 
 const PageWrapper = styled.div`
   height: 100vh;
@@ -50,7 +53,7 @@ export const FormWrapper = styled.div`
   }
   button {
     width: 95%;
-    margin-top: 60px;
+    margin-top: 40px;
     align-self: center;
   }
 `;
@@ -85,8 +88,8 @@ export const LabelInput = styled.div`
 `;
 
 export const ErrorMessage = styled.div`
-  height: 47px;
-  width: 320px;
+  height: 70px;
+  width: 330px;
   background-color: #f77066;
   margin-top: 10px;
   border-radius: 10px;
@@ -96,6 +99,7 @@ export const ErrorMessage = styled.div`
   justify-content: center;
   text-align: center;
   font-size: 1.2rem;
+  padding: 2px;
 `;
 
 const Header = styled.div`
@@ -114,15 +118,27 @@ export const Registration = () => {
     lastName: "",
     password: "",
     clientId: "",
-    approved: true,
+    approved: false,
   });
+
+  const error = useAppSelector((state) => state.app.error);
+  const isLoading = useAppSelector((state) => state.app.isFetching);
+  const redirectTo = useAppSelector((state) => state.app.redirectTo);
 
   const [errorMessage, setErrorMessage] = useState({
     visible: false,
     message: "",
   });
+
+  useEffect(() => {
+    error !== ""
+      ? setErrorMessage({ visible: true, message: error })
+      : setErrorMessage({ visible: false, message: "" });
+  }, [error, isLoading]);
+
   const navigate = useNavigate();
-  const onClickExitButton = () => navigate("/");
+
+  const dispatch = useTypedDispatch();
 
   const formVerification = () => {
     const mailRexExp = new RegExp(/^[^\s@]+@[^\s@]+\.[^\s@]+$/);
@@ -144,8 +160,20 @@ export const Registration = () => {
       });
       return;
     }
-    setErrorMessage({ visible: false, message: "" });
     return true;
+  };
+
+  const onClickExitButton = () => {
+    setErrorMessage({ visible: false, message: "" });
+    dispatch(clearLastError());
+    navigate("/");
+  };
+
+  const onSumbitHandler = () => {
+    if (formVerification()) {
+      setErrorMessage({ visible: false, message: "" });
+      dispatch(signUpUser(newEmploye));
+    } else return;
   };
 
   return (
@@ -254,7 +282,9 @@ export const Registration = () => {
             <Button
               name="Create"
               color="#0aa758"
-              onClick={() => console.log(formVerification())}
+              onClick={onSumbitHandler}
+              children={<Spinner></Spinner>}
+              isLoading={isLoading}
             ></Button>
           </form>
         </FormWrapper>

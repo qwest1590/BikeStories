@@ -7,6 +7,7 @@ import { Home } from "./components/Home/Home";
 import { ReportPage } from "./components/ReportPage/ReportPage";
 import { TheftArchieve } from "./components/TheftArchieve/TheftArchieve";
 import { Stuff } from "./components/Stuff/Stuff";
+
 const colors = {
   lightblue: "#3a9ad6",
   darkblue: "#1526BD",
