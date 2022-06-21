@@ -6,11 +6,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { LabelInput } from "../Registration/Registration";
 import { ErrorMessage } from "../Registration/Registration";
 import { useAppSelector, useTypedDispatch } from "../..";
-import {
-  clearLastError,
-  logOut,
-  signInUser,
-} from "../../redux/actions/actions";
+import { clearMesssage, logOut, signInUser } from "../../redux/actions/actions";
 import avatar from "../../images/userAvatar.jpg";
 import { Spinner } from "../Spinner/Spinner";
 
@@ -203,6 +199,7 @@ const LogOutHiddenButton = styled.button`
 
 const UserName = styled.span`
   font-size: 1.2rem;
+  font-style: italic;
   @media (max-width: 500px) {
     display: none;
   }
@@ -225,15 +222,15 @@ export const Header = () => {
   const [logoutIsVisible, setLogoutIsVisible] = useState(false);
 
   const dispatch = useTypedDispatch();
-  const error = useAppSelector((state) => state.app.error);
+  const messageForUser = useAppSelector((state) => state.app.messageForUser);
   const isLoading = useAppSelector((state) => state.app.isFetching);
   const user = useAppSelector((state) => state.app.loginnedUser);
 
   useEffect(() => {
-    error !== ""
-      ? setErrorMessage({ visible: true, message: error })
+    messageForUser.message !== null
+      ? setErrorMessage({ visible: true, message: messageForUser.message })
       : setErrorMessage({ visible: false, message: "" });
-  }, [error, isLoading]);
+  }, [messageForUser, isLoading]);
 
   useEffect(() => {
     setIsopen(false);
@@ -250,7 +247,7 @@ export const Header = () => {
 
   const onCloseHandler = () => {
     setIsopen(false);
-    dispatch(clearLastError());
+    dispatch(clearMesssage());
     setUserData(initialUserData);
   };
 
@@ -279,7 +276,7 @@ export const Header = () => {
         <img src={logo} alt="logo"></img>
       </Logo>
       <CompanyName> BikeStories</CompanyName>
-      {user.id !== "" ? (
+      {user.id !== null ? (
         <LogOutWrapper>
           <LogOutHiddenButton
             className={logoutIsVisible ? "visible" : "hidden"}
@@ -298,7 +295,12 @@ export const Header = () => {
             onClick={onClickHandler}
           ></Button>
           <RegSpan>
-            <Link to={"/registration"}>Registration</Link>
+            <Link
+              to={"/registration"}
+              onClick={() => dispatch(clearMesssage())}
+            >
+              Registration
+            </Link>
           </RegSpan>
           <SideMenu className={isOpen ? "active" : ""}>
             <h2>
@@ -306,6 +308,7 @@ export const Header = () => {
               <i>Welcome</i>
             </h2>
             <ErrorMessage
+              color={messageForUser.type === "success" ? "#02CCAF" : "#f77066"}
               style={
                 errorMessage.visible
                   ? { visibility: "initial" }

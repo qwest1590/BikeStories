@@ -6,7 +6,8 @@ import { Registration } from "./components/Registration/Registration";
 import { Home } from "./components/Home/Home";
 import { ReportPage } from "./components/ReportPage/ReportPage";
 import { TheftArchieve } from "./components/TheftArchieve/TheftArchieve";
-import { Stuff } from "./components/Stuff/Stuff";
+import { Staff } from "./components/Staff/Staff";
+import { useAppSelector } from ".";
 
 const colors = {
   lightblue: "#3a9ad6",
@@ -66,9 +67,9 @@ function App() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/registration" element={<Registration />} />
-        <Route path="/report" element={<ReportPage approved={true} />} />
+        <Route path="/report" element={<ReportPage />} />
         <Route path="/archieve" element={<TheftArchieve />} />
-        <Route path="/stuff" element={<Stuff />} />
+        <Route path="/stuff" element={<Staff />} />
       </Routes>
     </AppWrapper>
   );

@@ -30,7 +30,7 @@ const Btn = styled.button`
 interface IBtnProps {
   name: string;
   color: string;
-  onClick?(): void;
+  onClick?(e: React.MouseEvent): void;
   children?: ReactElement;
   isLoading?: boolean;
 }

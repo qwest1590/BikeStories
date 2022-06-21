@@ -1,6 +1,7 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
+import { useAppSelector } from "../..";
 import { Button } from "../Button/Button";
 import { Slider } from "../Slider/Slider";
 
@@ -228,6 +229,8 @@ const StuffPanel = styled.div`
 
 export const Main = () => {
   const navigate = useNavigate();
+  const isAutorized = useAppSelector((state) => state.app.loginnedUser);
+
   return (
     <MainWrapper>
       <h1 style={{ gridArea: "1/1/1/4" }}>
@@ -276,18 +279,21 @@ export const Main = () => {
           onClick={() => navigate("/report")}
         ></Button>
       </AboutTheft>
-      <StuffPanel>
-        <Button
-          color="#02CCAF"
-          name="Archieve"
-          onClick={() => navigate("/archieve")}
-        ></Button>
-        <Button
-          color="#02CCAF"
-          name="Stuff"
-          onClick={() => navigate("/stuff")}
-        ></Button>
-      </StuffPanel>
+      {isAutorized.id !== null ? (
+        <StuffPanel>
+          <Button
+            color="#02CCAF"
+            name="Archieve"
+            onClick={() => navigate("/archieve")}
+          ></Button>
+          <Button
+            color="#02CCAF"
+            name="Stuff"
+            onClick={() => navigate("/stuff")}
+          ></Button>
+        </StuffPanel>
+      ) : null}
+
       <RoadWish>Have a good road and interesting stories!</RoadWish>
     </MainWrapper>
   );

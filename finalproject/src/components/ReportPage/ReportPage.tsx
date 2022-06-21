@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { Button } from "../Button/Button";
 import { FormWrapper, LabelInput } from "../Registration/Registration";
@@ -7,17 +7,23 @@ import { Logo } from "../Header/Header";
 import { useNavigate } from "react-router-dom";
 import { ErrorMessage } from "../Registration/Registration";
 import { Dropdown } from "../Dropdown/Dropdown";
-
+import dayjs from "dayjs";
+import { useAppSelector, useTypedDispatch } from "../..";
+import { reportATheft } from "../../redux/actions/actions";
+import { clientId } from "../../redux/types/types";
 const PageWrapper = styled.div`
   background: #000000d3;
   height: auto;
 `;
 
 const ReportFormWrapper = styled(FormWrapper)`
-  height: 900px;
+  height: 950px;
   padding-bottom: 30px;
+  form {
+    height: 800px;
+  }
   button {
-    margin-top: 20px;
+    margin-top: 55px;
   }
 `;
 
@@ -68,22 +74,80 @@ const Header = styled.div`
   }
 `;
 
-interface IreportPageProps {
-  approved: boolean;
-}
+export const ReportPage = () => {
+  const dateForInput = dayjs().format("YYYY-MM-DD");
+  const dispatch = useTypedDispatch();
+  const messageForUser = useAppSelector((state) => state.data.messageForUser);
+  const isLoading = useAppSelector((state) => state.data.isFetching);
 
-export const ReportPage = (props: IreportPageProps) => {
+  const intitialState = {
+    officer: "",
+    licenseNumber: "",
+    ownerFullName: "",
+    type: "",
+    color: "",
+    date: dateForInput,
+    additionalInfo: "",
+    clientId: clientId,
+  };
+
+  useEffect(() => {
+    messageForUser.message !== null
+      ? setErrorMessage({ visible: true, message: messageForUser.message })
+      : setErrorMessage({ visible: false, message: "" });
+  }, [messageForUser, isLoading]);
+
+  const [reportCase, setReportCase] = useState(intitialState);
   const [errorMessage, setErrorMessage] = useState({
     visible: false,
     message: "",
   });
   const navigate = useNavigate();
-  const dateForInput = new Date()
-    .toLocaleDateString()
-    .replace(/\./gi, "-")
-    .split("-")
-    .reverse()
-    .join("-");
+
+  const loginned = useAppSelector((state) => state.app.loginnedUser.id);
+
+  const formVerification = () => {
+    if (reportCase.licenseNumber === "") {
+      setErrorMessage({ visible: true, message: "Licence № is required" });
+      return;
+    }
+    if (reportCase.ownerFullName === "") {
+      setErrorMessage({
+        visible: true,
+        message: "FullName is required,please fill it ",
+      });
+      return;
+    }
+    if (reportCase.type === "") {
+      setErrorMessage({
+        visible: true,
+        message: "Please choose type of your bike",
+      });
+      return;
+    }
+    return true;
+  };
+
+  const onSubmitHandler = (e: React.MouseEvent) => {
+    e.preventDefault();
+    if (formVerification()) {
+      dispatch(reportATheft(reportCase));
+    } else return;
+  };
+
+  const onChangeTypeDropdown = (value: string) => {
+    setReportCase((prevState) => ({
+      ...prevState,
+      type: value,
+    }));
+  };
+
+  const onChangeOfficerDropdown = (value: string) => {
+    setReportCase((prevState) => ({
+      ...prevState,
+      officer: value,
+    }));
+  };
 
   return (
     <PageWrapper>
@@ -100,52 +164,107 @@ export const ReportPage = (props: IreportPageProps) => {
       </Header>
       <ReportFormWrapper style={{ marginTop: "0px" }}>
         <h1>Report a Theft</h1>
-        <ErrorMessage></ErrorMessage>
+        <ErrorMessage
+          color={messageForUser.type === "success" ? "#02CCAF" : "#f77066"}
+          style={
+            errorMessage.visible
+              ? { visibility: "initial" }
+              : { visibility: "hidden" }
+          }
+        >
+          {errorMessage.message}
+        </ErrorMessage>
         <form>
-          {props.approved ? (
+          {loginned !== null ? (
             <Dropdown
               options={["Vasya ", "Petya", "Igor"]}
-              label="Choose the Employe"
+              label="Choose the Officer"
               description="Employe: "
+              onChange={onChangeOfficerDropdown}
             ></Dropdown>
           ) : null}
           <LabelInput>
             <label>
               Licence №:
-              <input type={"text"}></input>
+              <input
+                onChange={(e) =>
+                  setReportCase((prevState) => ({
+                    ...prevState,
+                    licenseNumber: e.target.value,
+                  }))
+                }
+                type={"text"}
+              ></input>
             </label>
           </LabelInput>
           <LabelInput>
             <label>
               FullName:
-              <input type={"text"}></input>
+              <input
+                onChange={(e) =>
+                  setReportCase((prevState) => ({
+                    ...prevState,
+                    ownerFullName: e.target.value,
+                  }))
+                }
+                type={"text"}
+              ></input>
             </label>
           </LabelInput>
           <Dropdown
-            options={["Sport ", "City ", "Children"]}
+            options={["Sport ", "General"]}
             label="Choose the Type"
             description="Type of Bike: "
+            onChange={onChangeTypeDropdown}
           ></Dropdown>
           <LabelInput>
             <label>
               Color of Bike:
-              <input type={"text"}></input>
+              <input
+                onChange={(e) =>
+                  setReportCase((prevState) => ({
+                    ...prevState,
+                    color: e.target.value,
+                  }))
+                }
+                type={"text"}
+              ></input>
             </label>
           </LabelInput>
           <LabelInput>
             <label>
               Date of theft:
-              <input type={"date"} defaultValue={dateForInput}></input>
+              <input
+                onChange={(e) =>
+                  setReportCase((prevState) => ({
+                    ...prevState,
+                    date: e.target.value,
+                  }))
+                }
+                type={"date"}
+                defaultValue={dateForInput}
+              ></input>
             </label>
           </LabelInput>
           <TextAreaWrapper>
             <label>
               {" "}
               Additional information:
-              <TextArea></TextArea>
+              <TextArea
+                onChange={(e) =>
+                  setReportCase((prevState) => ({
+                    ...prevState,
+                    additionalInfo: e.target.value,
+                  }))
+                }
+              ></TextArea>
             </label>
           </TextAreaWrapper>
-          <Button color="#02CCAF" name="Send Report"></Button>
+          <Button
+            color="#02CCAF"
+            name="Send Report"
+            onClick={onSubmitHandler}
+          ></Button>
         </form>
       </ReportFormWrapper>
     </PageWrapper>

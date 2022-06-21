@@ -8,6 +8,10 @@ const LoadingSpinner = styled.div`
   border-top: 10px solid #02ccaf;
   border-radius: 50%;
   animation: spinner 1.5s linear infinite;
+  @media (max-width: 500px) {
+    max-height: 23px;
+    max-width: 23px;
+  }
   @keyframes spinner {
     0% {
       transform: rotate(0deg);

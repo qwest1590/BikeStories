@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import styled from "styled-components";
 
 const DropdownLabel = styled.div`
@@ -50,19 +50,24 @@ interface IDropdownOptions {
   options: string[];
   label: string;
   description: string;
+  onChange(value: string): void;
 }
 
-export const Dropdown = (props: IDropdownOptions) => {
+export const Dropdown = ({
+  options,
+  label,
+  description,
+  onChange,
+}: IDropdownOptions) => {
   const [dropdown, setDropdown] = useState({
     isOpen: false,
-    labelText: props.label,
+    labelText: label,
   });
+
   return (
     <>
       {" "}
-      <p style={{ fontSize: "1.2rem", paddingTop: "20px" }}>
-        {props.description}
-      </p>
+      <p style={{ fontSize: "1.2rem", paddingTop: "20px" }}>{description}</p>
       <div>
         <DropdownLabel
           onClick={() =>
@@ -74,15 +79,16 @@ export const Dropdown = (props: IDropdownOptions) => {
         </DropdownLabel>
         <OptionsList>
           {dropdown.isOpen
-            ? props.options.map((item) => (
+            ? options.map((item) => (
                 <li key={item}>
                   <DropdownItem
-                    onClick={(e) =>
+                    onClick={(e) => {
+                      onChange(e.currentTarget.innerText.toLowerCase());
                       setDropdown({
                         isOpen: false,
                         labelText: e.currentTarget.innerText,
-                      })
-                    }
+                      });
+                    }}
                   >
                     {item}
                   </DropdownItem>

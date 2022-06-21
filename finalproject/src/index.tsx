@@ -13,6 +13,7 @@ import { AnyAction, configureStore } from "@reduxjs/toolkit";
 import { rootReducer } from "./redux/reducers/rootReducer";
 import thunk, { ThunkAction, ThunkDispatch } from "redux-thunk";
 import { createBrowserHistory } from "history";
+import { unstable_HistoryRouter as HistoryRouter } from "react-router-dom";
 
 export const history = createBrowserHistory();
 
@@ -40,10 +41,10 @@ const root = ReactDOM.createRoot(
 );
 root.render(
   <Provider store={store}>
-    <BrowserRouter>
+    <HistoryRouter history={history}>
       <React.StrictMode>
         <App />
       </React.StrictMode>
-    </BrowserRouter>
+    </HistoryRouter>
   </Provider>
 );

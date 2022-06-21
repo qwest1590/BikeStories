@@ -6,9 +6,10 @@ import { Button } from "../Button/Button";
 import { Logo, CompanyName } from "../Header/Header";
 import logo from "../../images/logo.jpg";
 import { useNavigate } from "react-router-dom";
-import { clearLastError, signUpUser } from "../../redux/actions/actions";
+import { clearMesssage, signUpUser } from "../../redux/actions/actions";
 import { useAppSelector, useTypedDispatch } from "../..";
 import { Spinner } from "../Spinner/Spinner";
+import { clientId } from "../../redux/types/types";
 
 const PageWrapper = styled.div`
   height: 100vh;
@@ -53,7 +54,7 @@ export const FormWrapper = styled.div`
   }
   button {
     width: 95%;
-    margin-top: 40px;
+    margin-top: 120px;
     align-self: center;
   }
 `;
@@ -90,7 +91,7 @@ export const LabelInput = styled.div`
 export const ErrorMessage = styled.div`
   height: 70px;
   width: 330px;
-  background-color: #f77066;
+  background-color: ${(props) => props.color};
   margin-top: 10px;
   border-radius: 10px;
   align-self: center;
@@ -112,18 +113,17 @@ const Header = styled.div`
 `;
 
 export const Registration = () => {
-  const [newEmploye, setNewEmploye] = useState({
+  const [newOfficer, setNewOfficer] = useState({
     email: "",
     firstName: "",
     lastName: "",
     password: "",
-    clientId: "",
+    clientId: clientId,
     approved: false,
   });
 
-  const error = useAppSelector((state) => state.app.error);
+  const messageForUser = useAppSelector((state) => state.app.messageForUser);
   const isLoading = useAppSelector((state) => state.app.isFetching);
-  const redirectTo = useAppSelector((state) => state.app.redirectTo);
 
   const [errorMessage, setErrorMessage] = useState({
     visible: false,
@@ -131,32 +131,25 @@ export const Registration = () => {
   });
 
   useEffect(() => {
-    error !== ""
-      ? setErrorMessage({ visible: true, message: error })
+    messageForUser.message !== null
+      ? setErrorMessage({ visible: true, message: messageForUser.message })
       : setErrorMessage({ visible: false, message: "" });
-  }, [error, isLoading]);
+  }, [messageForUser, isLoading]);
 
   const navigate = useNavigate();
-
   const dispatch = useTypedDispatch();
 
   const formVerification = () => {
     const mailRexExp = new RegExp(/^[^\s@]+@[^\s@]+\.[^\s@]+$/);
-    if (!newEmploye.email.match(mailRexExp)) {
+    if (!newOfficer.email.match(mailRexExp)) {
       setErrorMessage({ visible: true, message: "Incorrect Email" });
       return;
     }
-    if (newEmploye.password.length < 8) {
+    if (newOfficer.password.length > 12 || newOfficer.password.length < 3) {
       setErrorMessage({
         visible: true,
-        message: "Password should be contain more then 8 characters",
-      });
-      return;
-    }
-    if (newEmploye.clientId === "") {
-      setErrorMessage({
-        visible: true,
-        message: "Please enter your cliendID",
+        message:
+          "Password should be contain more than 3 and less than 12 characters",
       });
       return;
     }
@@ -165,14 +158,14 @@ export const Registration = () => {
 
   const onClickExitButton = () => {
     setErrorMessage({ visible: false, message: "" });
-    dispatch(clearLastError());
+    dispatch(clearMesssage());
     navigate("/");
   };
 
   const onSumbitHandler = () => {
     if (formVerification()) {
       setErrorMessage({ visible: false, message: "" });
-      dispatch(signUpUser(newEmploye));
+      dispatch(signUpUser(newOfficer));
     } else return;
   };
 
@@ -196,6 +189,7 @@ export const Registration = () => {
           <form onSubmit={(e) => e.preventDefault()}>
             <h1>Registration Form</h1>
             <ErrorMessage
+              color={messageForUser.type === "success" ? "#02CCAF" : "#f77066"}
               style={
                 errorMessage.visible
                   ? { visibility: "initial" }
@@ -211,7 +205,7 @@ export const Registration = () => {
                   type={"text"}
                   placeholder="Example123@mail.ru"
                   onChange={(e) =>
-                    setNewEmploye((prevState) => ({
+                    setNewOfficer((prevState) => ({
                       ...prevState,
                       email: e.target.value,
                     }))
@@ -226,7 +220,7 @@ export const Registration = () => {
                   type={"password"}
                   placeholder={"Password"}
                   onChange={(e) =>
-                    setNewEmploye((prevState) => ({
+                    setNewOfficer((prevState) => ({
                       ...prevState,
                       password: e.target.value,
                     }))
@@ -241,7 +235,7 @@ export const Registration = () => {
                   type={"text"}
                   placeholder="Dmitriy"
                   onChange={(e) =>
-                    setNewEmploye((prevState) => ({
+                    setNewOfficer((prevState) => ({
                       ...prevState,
                       firstName: e.target.value,
                     }))
@@ -256,24 +250,9 @@ export const Registration = () => {
                   type={"text"}
                   placeholder="Vorobyev"
                   onChange={(e) =>
-                    setNewEmploye((prevState) => ({
+                    setNewOfficer((prevState) => ({
                       ...prevState,
                       lastName: e.target.value,
-                    }))
-                  }
-                ></input>
-              </label>
-            </LabelInput>
-            <LabelInput>
-              <label>
-                ClientID:
-                <input
-                  type={"text"}
-                  placeholder="Your ClientID"
-                  onChange={(e) =>
-                    setNewEmploye((prevState) => ({
-                      ...prevState,
-                      clientId: e.target.value,
                     }))
                   }
                 ></input>

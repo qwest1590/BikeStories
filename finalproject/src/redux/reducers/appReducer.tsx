@@ -1,75 +1,88 @@
-import { useNavigate } from "react-router-dom";
-
 const initialState = {
   isFetching: false,
-  error: "",
-  redirectTo: "",
+  messageForUser: {
+    type: null,
+    message: null,
+  },
   loginnedUser: {
-    id: "",
-    email: "",
-    firstName: "",
-    lastName: "",
-    approved: false,
+    id: null,
+    email: null,
+    firstName: null,
+    lastName: null,
+    approved: null,
   },
 };
 
 interface IUser {
-  id: string;
-  email: string;
-  firstName: string;
-  lastName: string;
-  approved: boolean;
+  id: string | null;
+  email: string | null;
+  firstName: string | null;
+  lastName: string | null;
+  approved: boolean | null;
 }
 
 interface IAppState {
   isFetching: boolean;
-  error: string;
-  redirectTo: string;
+  messageForUser: object;
   loginnedUser: IUser;
 }
 export const appReducer = (state: IAppState = initialState, action: any) => {
   switch (action.type) {
-    case "SIGNUPSTARTED":
+    case "SIGNUP_STARTED":
       return {
         ...state,
         isFetching: true,
       };
-    case "SIGNUPSUCCESS":
+    case "SIGNUP_SUCCESS":
       return {
         ...state,
         isFetching: false,
-        error: "",
-        redirectTo: action.payload,
+        messageForUser: {
+          type: "success",
+          message: "Successfully created",
+        },
       };
-    case "SIGNUPFAILURE":
+    case "SIGNUP_FAILURE":
       return {
         ...state,
         isFetching: false,
-        error: action.payload,
+        messageForUser: {
+          type: "error",
+          message: action.payload,
+        },
       };
-    case "CLEARLASTERROR":
+    case "CLEAR_MESSAGE":
       return {
         ...state,
-        error: "",
+        messageForUser: {
+          type: null,
+          message: null,
+        },
       };
-    case "SIGNINSTARTED":
+    case "SIGNIN_STARTED":
       return {
         ...state,
         isFetching: true,
       };
-    case "SIGNINSUCCESS":
+    case "SIGNIN_SUCCESS":
       const user = Object.assign({}, action.payload);
       return {
         ...state,
         isFetching: false,
         loginnedUser: user,
-        error: "",
+        messageForUser: {
+          type: null,
+          message: null,
+        },
       };
-    case "SIGNINFAILURE":
+    case "SIGNIN_FAILURE":
       return {
         ...state,
         isFetching: false,
-        error: action.payload,
+        messageForUser: {
+          type: "error",
+          message: action.payload,
+        },
       };
     case "LOGOUT":
       return { ...initialState };
