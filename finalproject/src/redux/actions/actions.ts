@@ -1,6 +1,12 @@
 import {
   CLEARDATA_MESSAGE,
   CLEAR_MESSAGE,
+  DELETE_OFFICER_BY_ID_STARTED,
+  DELETE_OFFICER_BY_ID_SUCCESS,
+  EDIT_OFFICER_CLOSED,
+  EDIT_OFFICER_DATA_STARTED,
+  EDIT_OFFICER_DATA_SUCCESS,
+  EDIT_OFFICER_OPENED,
   GETALLOFFICERS_FAILURE,
   GETALLOFFICERS_STARTED,
   GETALLOFFICERS_SUCCESS,
@@ -8,6 +14,7 @@ import {
   REPORTATHEFT_FAILURE,
   REPORTATHEFT_STARTED,
   REPORTATHEFT_SUCCESS,
+  RESET_DATA_STATE,
   SIGNIN_FAILURE,
   SIGNIN_STARTED,
   SIGNIN_SUCCESS,
@@ -16,9 +23,10 @@ import {
   SIGNUP_SUCCESS,
 } from "../types/types";
 import { history, TypedDispatch } from "../..";
-import { resolveSoa } from "dns";
+import { IOfficer } from "../../components/Officers/Officers";
 
 const token: any = localStorage.getItem("token");
+
 const API_URL = "https://sf-final-project.herokuapp.com/api/";
 
 const fetchApiPostUnAuth = async (url: string, body: object) => {
@@ -32,11 +40,18 @@ const fetchApiPostUnAuth = async (url: string, body: object) => {
   return response.json();
 };
 
-const fetchApiGetAuth = async (url: string, token: string) => {
+const fetchApiAuth = async (
+  url: string,
+  token: string,
+  method: string,
+  body?: any
+) => {
   const response = await fetch(API_URL + url, {
-    method: "GET",
+    method: method,
+    body: JSON.stringify(body),
     headers: {
       Authorization: `bearer ${token}`,
+      "Content-Type": "application/json",
     },
   });
   return response.json();
@@ -112,6 +127,68 @@ export const reportATheft = (theft: object) => {
   };
 };
 
+export const deleteOfficerById = (id: string) => {
+  return async (dispatch: TypedDispatch) => {
+    dispatch(deleteOfficerByIdStarted());
+    const response = fetchApiAuth(`officers/${id}`, token, "DELETE");
+    response
+      .then((res) => {
+        if (res.status === "ERR") {
+          dispatch(deleteOfficerByIdFailure(res.message));
+        }
+        if (res.status === "OK") {
+          dispatch(deleteOfficerByIdSuccess());
+        }
+      })
+      .catch((error) => {
+        throw new Error(error);
+      });
+  };
+};
+
+export const editOfficerById = (officer: IOfficer) => {
+  return async (dispatch: TypedDispatch) => {
+    dispatch(editOfficerDataStarted(officer));
+    const response = fetchApiAuth(
+      `officers/${officer._id}`,
+      token,
+      "PUT",
+      officer
+    );
+    response
+      .then((res) => {
+        if (res.status === "ERR") {
+          dispatch(editOfficerDataFailure(res.message));
+        }
+        if (res.status === "OK") {
+          console.log(res.data, "RES");
+          dispatch(editOfficerDataSuccess(res.data));
+        }
+      })
+      .catch((error) => {
+        throw new Error(error);
+      });
+  };
+};
+
+// export const editOfficerById = (officer: IOfficer) => {
+//   return async (dispatch: TypedDispatch) => {
+//     dispatch(editOfficerDataStarted(officer));
+//     const response = await fetch(
+//       `https://sf-final-project.herokuapp.com/api/officers/${officer._id}`,
+//       {
+//         method: "PUT",
+//         body: JSON.stringify(officer),
+//         headers: {
+//           Authorization: `bearer ${token}`,
+//           "Content-Type": "application/json",
+//         },
+//       }
+//     );
+//     response.json().then((data) => console.log(data));
+//   };
+// };
+
 export const signUpStarted = () => {
   return {
     type: SIGNUP_STARTED,
@@ -166,7 +243,7 @@ export const logOut = () => {
 export const getAllOfficers = () => {
   return async (dispatch: TypedDispatch) => {
     dispatch(getAllOfficersStarted());
-    const response = fetchApiGetAuth("officers/", token);
+    const response = fetchApiAuth("officers/", token, "GET");
     response
       .then((res) => {
         if (!res) {
@@ -223,5 +300,64 @@ export const reportATheftFailure = (error: any) => {
 export const clearDataMessage = () => {
   return {
     type: CLEARDATA_MESSAGE,
+  };
+};
+
+export const deleteOfficerByIdStarted = () => {
+  return {
+    type: DELETE_OFFICER_BY_ID_STARTED,
+  };
+};
+
+export const deleteOfficerByIdSuccess = () => {
+  return {
+    type: DELETE_OFFICER_BY_ID_SUCCESS,
+  };
+};
+
+export const deleteOfficerByIdFailure = (error: any) => {
+  return {
+    type: DELETE_OFFICER_BY_ID_SUCCESS,
+    payload: error,
+  };
+};
+
+// export const resetDataState = () => {
+//   return {
+//     type: RESET_DATA_STATE,
+//   };
+// };
+
+export const editOfficerOpened = (officer: object) => {
+  return {
+    type: EDIT_OFFICER_OPENED,
+    payload: officer,
+  };
+};
+
+export const editOfficerDataStarted = (officer: IOfficer) => {
+  return {
+    type: EDIT_OFFICER_DATA_STARTED,
+    payload: officer,
+  };
+};
+
+export const editOfficerDataSuccess = (officer: IOfficer) => {
+  return {
+    type: EDIT_OFFICER_DATA_SUCCESS,
+    payload: officer,
+  };
+};
+
+export const editOfficerDataFailure = (error: any) => {
+  return {
+    type: EDIT_OFFICER_DATA_SUCCESS,
+    payload: error,
+  };
+};
+
+export const editOfficerCloser = () => {
+  return {
+    type: EDIT_OFFICER_CLOSED,
   };
 };

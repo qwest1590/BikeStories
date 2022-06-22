@@ -289,7 +289,7 @@ export const Main = () => {
           <Button
             color="#02CCAF"
             name="Stuff"
-            onClick={() => navigate("/stuff")}
+            onClick={() => navigate("/officers")}
           ></Button>
         </StuffPanel>
       ) : null}

@@ -9,7 +9,7 @@ import { useNavigate } from "react-router-dom";
 import { clearMesssage, signUpUser } from "../../redux/actions/actions";
 import { useAppSelector, useTypedDispatch } from "../..";
 import { Spinner } from "../Spinner/Spinner";
-import { clientId } from "../../redux/types/types";
+// import { clientId } from "../../redux/types/types";
 
 const PageWrapper = styled.div`
   height: 100vh;
@@ -54,7 +54,7 @@ export const FormWrapper = styled.div`
   }
   button {
     width: 95%;
-    margin-top: 120px;
+    margin-top: 40px;
     align-self: center;
   }
 `;
@@ -118,7 +118,7 @@ export const Registration = () => {
     firstName: "",
     lastName: "",
     password: "",
-    clientId: clientId,
+    clientId: "",
     approved: false,
   });
 
@@ -150,6 +150,13 @@ export const Registration = () => {
         visible: true,
         message:
           "Password should be contain more than 3 and less than 12 characters",
+      });
+      return;
+    }
+    if (newOfficer.clientId === "") {
+      setErrorMessage({
+        visible: true,
+        message: "Please enter your CliendID",
       });
       return;
     }
@@ -253,6 +260,21 @@ export const Registration = () => {
                     setNewOfficer((prevState) => ({
                       ...prevState,
                       lastName: e.target.value,
+                    }))
+                  }
+                ></input>
+              </label>
+            </LabelInput>
+            <LabelInput>
+              <label>
+                ClientID:
+                <input
+                  type={"text"}
+                  placeholder="Your ClientID"
+                  onChange={(e) =>
+                    setNewOfficer((prevState) => ({
+                      ...prevState,
+                      clientId: e.target.value,
                     }))
                   }
                 ></input>

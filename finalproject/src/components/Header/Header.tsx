@@ -6,7 +6,12 @@ import { Link, useNavigate } from "react-router-dom";
 import { LabelInput } from "../Registration/Registration";
 import { ErrorMessage } from "../Registration/Registration";
 import { useAppSelector, useTypedDispatch } from "../..";
-import { clearMesssage, logOut, signInUser } from "../../redux/actions/actions";
+import {
+  clearMesssage,
+  getAllOfficers,
+  logOut,
+  signInUser,
+} from "../../redux/actions/actions";
 import avatar from "../../images/userAvatar.jpg";
 import { Spinner } from "../Spinner/Spinner";
 
@@ -243,6 +248,7 @@ export const Header = () => {
 
   const onSubmitHandler = () => {
     dispatch(signInUser(userData));
+    dispatch(getAllOfficers());
   };
 
   const onCloseHandler = () => {
