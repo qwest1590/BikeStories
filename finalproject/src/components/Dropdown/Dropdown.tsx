@@ -4,7 +4,7 @@ import styled from "styled-components";
 const DropdownLabel = styled.div`
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: space-between;
   width: 560px;
   height: 30px;
   margin-top: 8px;
@@ -20,15 +20,11 @@ const DropdownLabel = styled.div`
     cursor: pointer;
   }
   @media (max-width: 640px) {
-    width: 335px;
+    width: 315px;
   }
 `;
 
-const DropdownArrow = styled.div`
-  transform: rotate(90deg);
-  position: absolute;
-  right: 20px;
-`;
+const DropdownArrow = styled.div``;
 
 const DropdownItem = styled(DropdownLabel)`
   margin-top: 0px;
@@ -75,7 +71,7 @@ export const Dropdown = ({
           }
         >
           <span>{dropdown.labelText}</span>
-          <DropdownArrow>&#10148;</DropdownArrow>
+          <DropdownArrow>&#9660;</DropdownArrow>
         </DropdownLabel>
         <OptionsList>
           {dropdown.isOpen

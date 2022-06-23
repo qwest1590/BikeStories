@@ -80,7 +80,7 @@ export const LabelInput = styled.div`
       }
     }
     @media (max-width: 640px) {
-      width: 335px;
+      width: 315px;
     }
     &:focus {
       outline: 1px solid #6006d6;

@@ -11,6 +11,7 @@ import dayjs from "dayjs";
 import { useAppSelector, useTypedDispatch } from "../..";
 import { reportATheft } from "../../redux/actions/actions";
 import { clientId } from "../../redux/types/types";
+import { IOfficer } from "../Officers/Officers";
 const PageWrapper = styled.div`
   background: #000000d3;
   height: auto;
@@ -19,15 +20,22 @@ const PageWrapper = styled.div`
 const ReportFormWrapper = styled(FormWrapper)`
   height: 950px;
   padding-bottom: 30px;
+  @media (max-width: 640px) {
+    width: 355px;
+  }
   form {
     height: 800px;
+    @media (max-width: 640px) {
+      width: 335px;
+    }
   }
+
   button {
     margin-top: 55px;
   }
 `;
 
-const TextArea = styled.textarea`
+export const TextArea = styled.textarea`
   width: 565px;
   height: 120px;
   resize: none;
@@ -45,7 +53,7 @@ const TextArea = styled.textarea`
   }
 `;
 
-const TextAreaWrapper = styled.div`
+export const TextAreaWrapper = styled.div`
   padding-top: 20px;
   label {
     font-size: 1.2rem;
@@ -65,6 +73,7 @@ const Header = styled.div`
     font-style: italic;
     @media (max-width: 670px) {
       font-size: 1.3rem;
+      padding: 10px;
     }
   }
   button {
@@ -79,6 +88,10 @@ export const ReportPage = () => {
   const dispatch = useTypedDispatch();
   const messageForUser = useAppSelector((state) => state.data.messageForUser);
   const isLoading = useAppSelector((state) => state.data.isFetching);
+  const officers = useAppSelector((state) => state.data.officers);
+  const approvedOfficers = officers.filter(
+    (officer: IOfficer) => officer.approved === true
+  );
 
   const intitialState = {
     officer: "",
@@ -177,7 +190,10 @@ export const ReportPage = () => {
         <form>
           {loginned !== null ? (
             <Dropdown
-              options={["Vasya ", "Petya", "Igor"]}
+              options={approvedOfficers.map(
+                (officer: IOfficer) =>
+                  officer.firstName + " " + officer.lastName
+              )}
               label="Choose the Officer"
               description="Employe: "
               onChange={onChangeOfficerDropdown}

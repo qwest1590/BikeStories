@@ -8,6 +8,7 @@ import { ErrorMessage } from "../Registration/Registration";
 import { useAppSelector, useTypedDispatch } from "../..";
 import {
   clearMesssage,
+  getAllCases,
   getAllOfficers,
   logOut,
   signInUser,
@@ -249,6 +250,7 @@ export const Header = () => {
   const onSubmitHandler = () => {
     dispatch(signInUser(userData));
     dispatch(getAllOfficers());
+    dispatch(getAllCases());
   };
 
   const onCloseHandler = () => {

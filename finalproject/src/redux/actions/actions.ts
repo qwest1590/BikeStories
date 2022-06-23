@@ -1,8 +1,13 @@
 import {
   CLEARDATA_MESSAGE,
   CLEAR_MESSAGE,
+  DELETE_CASE_BY_ID_FAILURE,
+  DELETE_CASE_BY_ID_STARTED,
+  DELETE_CASE_BY_ID_SUCCESS,
+  DELETE_OFFICER_BY_ID_FAILURE,
   DELETE_OFFICER_BY_ID_STARTED,
   DELETE_OFFICER_BY_ID_SUCCESS,
+  EDIT_CASE_OPENED,
   EDIT_OFFICER_CLOSED,
   EDIT_OFFICER_DATA_STARTED,
   EDIT_OFFICER_DATA_SUCCESS,
@@ -10,11 +15,13 @@ import {
   GETALLOFFICERS_FAILURE,
   GETALLOFFICERS_STARTED,
   GETALLOFFICERS_SUCCESS,
+  GET_ALL_CASES_FAILURE,
+  GET_ALL_CASES_STARTED,
+  GET_ALL_CASES_SUCCESS,
   LOGOUT,
   REPORTATHEFT_FAILURE,
   REPORTATHEFT_STARTED,
   REPORTATHEFT_SUCCESS,
-  RESET_DATA_STATE,
   SIGNIN_FAILURE,
   SIGNIN_STARTED,
   SIGNIN_SUCCESS,
@@ -24,6 +31,7 @@ import {
 } from "../types/types";
 import { history, TypedDispatch } from "../..";
 import { IOfficer } from "../../components/Officers/Officers";
+import { ITheft } from "../../components/TheftArchieve/TheftArchieve";
 
 const token: any = localStorage.getItem("token");
 
@@ -138,6 +146,27 @@ export const deleteOfficerById = (id: string) => {
         }
         if (res.status === "OK") {
           dispatch(deleteOfficerByIdSuccess());
+          dispatch(getAllOfficers());
+        }
+      })
+      .catch((error) => {
+        throw new Error(error);
+      });
+  };
+};
+
+export const deleteCaseById = (id: string) => {
+  return async (dispatch: TypedDispatch) => {
+    dispatch(deleteCaseByIdStarted());
+    const response = fetchApiAuth(`cases/${id}`, token, "DELETE");
+    response
+      .then((res) => {
+        if (res.status === "ERR") {
+          dispatch(deleteCaseByIdFailure(res.message));
+        }
+        if (res.status === "OK") {
+          dispatch(deleteCaseByIdSuccess());
+          dispatch(getAllCases());
         }
       })
       .catch((error) => {
@@ -161,8 +190,10 @@ export const editOfficerById = (officer: IOfficer) => {
           dispatch(editOfficerDataFailure(res.message));
         }
         if (res.status === "OK") {
-          console.log(res.data, "RES");
           dispatch(editOfficerDataSuccess(res.data));
+          setTimeout(() => {
+            history.replace("/officers");
+          }, 500);
         }
       })
       .catch((error) => {
@@ -170,24 +201,6 @@ export const editOfficerById = (officer: IOfficer) => {
       });
   };
 };
-
-// export const editOfficerById = (officer: IOfficer) => {
-//   return async (dispatch: TypedDispatch) => {
-//     dispatch(editOfficerDataStarted(officer));
-//     const response = await fetch(
-//       `https://sf-final-project.herokuapp.com/api/officers/${officer._id}`,
-//       {
-//         method: "PUT",
-//         body: JSON.stringify(officer),
-//         headers: {
-//           Authorization: `bearer ${token}`,
-//           "Content-Type": "application/json",
-//         },
-//       }
-//     );
-//     response.json().then((data) => console.log(data));
-//   };
-// };
 
 export const signUpStarted = () => {
   return {
@@ -259,6 +272,25 @@ export const getAllOfficers = () => {
   };
 };
 
+export const getAllCases = () => {
+  return async (dispatch: TypedDispatch) => {
+    dispatch(getAllCasesStarted());
+    const response = fetchApiAuth("cases/", token, "GET");
+    response
+      .then((res) => {
+        if (res.status === "ERR") {
+          dispatch(getAllCasesFailure);
+        }
+        if (res.status === "OK") {
+          dispatch(getAllCasesSuccess(res.data));
+        }
+      })
+      .catch((error) => {
+        throw new Error(error);
+      });
+  };
+};
+
 export const getAllOfficersStarted = () => {
   return {
     type: GETALLOFFICERS_STARTED,
@@ -317,16 +349,10 @@ export const deleteOfficerByIdSuccess = () => {
 
 export const deleteOfficerByIdFailure = (error: any) => {
   return {
-    type: DELETE_OFFICER_BY_ID_SUCCESS,
+    type: DELETE_OFFICER_BY_ID_FAILURE,
     payload: error,
   };
 };
-
-// export const resetDataState = () => {
-//   return {
-//     type: RESET_DATA_STATE,
-//   };
-// };
 
 export const editOfficerOpened = (officer: object) => {
   return {
@@ -359,5 +385,51 @@ export const editOfficerDataFailure = (error: any) => {
 export const editOfficerCloser = () => {
   return {
     type: EDIT_OFFICER_CLOSED,
+  };
+};
+
+export const getAllCasesStarted = () => {
+  return {
+    type: GET_ALL_CASES_STARTED,
+  };
+};
+
+export const getAllCasesSuccess = (payload: any) => {
+  return {
+    type: GET_ALL_CASES_SUCCESS,
+    payload,
+  };
+};
+
+export const getAllCasesFailure = (error: any) => {
+  return {
+    type: GET_ALL_CASES_FAILURE,
+    payload: error,
+  };
+};
+
+export const deleteCaseByIdStarted = () => {
+  return {
+    type: DELETE_CASE_BY_ID_STARTED,
+  };
+};
+
+export const deleteCaseByIdSuccess = () => {
+  return {
+    type: DELETE_CASE_BY_ID_SUCCESS,
+  };
+};
+
+export const deleteCaseByIdFailure = (error: any) => {
+  return {
+    type: DELETE_CASE_BY_ID_FAILURE,
+    payload: error,
+  };
+};
+
+export const editCaseOpened = (theft: ITheft) => {
+  return {
+    type: EDIT_CASE_OPENED,
+    payload: theft,
   };
 };

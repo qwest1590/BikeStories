@@ -5,10 +5,14 @@ import background from "./images/bicycleRiding.jpg";
 import { Registration } from "./components/Registration/Registration";
 import { Home } from "./components/Home/Home";
 import { ReportPage } from "./components/ReportPage/ReportPage";
-import { TheftArchieve } from "./components/TheftArchieve/TheftArchieve";
+import {
+  ITheft,
+  TheftArchieve,
+} from "./components/TheftArchieve/TheftArchieve";
 import { IOfficer, Officers } from "./components/Officers/Officers";
 import { useAppSelector } from ".";
 import { OfficerDetail } from "./components/OfficerDetail/OfficerDetail";
+import { TheftDetail } from "./components/TheftDetail/TheftDetail";
 
 const colors = {
   lightblue: "#3a9ad6",
@@ -66,6 +70,8 @@ function App() {
     (state) => state.data.officerOnEdit
   );
 
+  const caseOnEdit: ITheft = useAppSelector((state) => state.data.caseOnEdit);
+
   return (
     <AppWrapper>
       <Background src={background} alt="background"></Background>
@@ -78,6 +84,10 @@ function App() {
         <Route
           path={`/officers/${officerOnEdit._id}`}
           element={<OfficerDetail {...officerOnEdit} />}
+        />
+        <Route
+          path={`/cases/${caseOnEdit._id}`}
+          element={<TheftDetail {...caseOnEdit} />}
         />
       </Routes>
     </AppWrapper>

@@ -4,8 +4,8 @@ import styled from "styled-components";
 
 const Btn = styled.button`
   z-index: 1;
-  min-width: 85px;
   height: 45px;
+  width: 90px;
   padding: 0px 10px 0px 10px;
   border: none;
   border-radius: 7px;
@@ -19,6 +19,9 @@ const Btn = styled.button`
   justify-content: center;
   align-items: center;
   transition: box-shadow 0.2s linear;
+  @media (max-width: 640px) {
+    margin-right: 5px;
+  }
   &:hover {
     box-shadow: inset 0 0 0 23px #14c74a;
   }

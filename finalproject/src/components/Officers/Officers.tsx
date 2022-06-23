@@ -50,7 +50,7 @@ export const StaffPageHeader = styled.div`
   }
 `;
 
-const flexCell = css`
+export const flexCell = css`
   height: 100%;
   display: flex;
   align-items: center;
@@ -58,7 +58,7 @@ const flexCell = css`
   justify-content: center;
 `;
 
-const Officer = styled.div`
+export const Officer = styled.div`
   display: grid;
   grid-template-columns: 25px 150px 150px 200px 100px 100px;
   height: 55px;
@@ -70,7 +70,7 @@ const Officer = styled.div`
   }
 `;
 
-const OfficerHeader = styled(Officer)`
+export const OfficerHeader = styled(Officer)`
   height: 55px;
   outline: none;
   font-size: 1.2rem;
@@ -86,7 +86,7 @@ const OfficerHeader = styled(Officer)`
   }
 `;
 
-const DeleteButton = styled.button`
+export const DeleteButton = styled.button`
   height: 40px;
   width: 40px;
   border-radius: 50%;
@@ -102,7 +102,7 @@ const DeleteButton = styled.button`
   }
 `;
 
-const Footer = styled.div`
+export const Footer = styled.div`
   height: 100px;
   margin-top: 300px;
   align-self: center;
@@ -163,7 +163,7 @@ export const Officers = () => {
 
   useEffect(() => {
     dispatch(getAllOfficers());
-  }, [dispatch, refreshList]);
+  }, [dispatch]);
 
   const onDeleteHandler = (id: string) => {
     dispatch(deleteOfficerById(id));

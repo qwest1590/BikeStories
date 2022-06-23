@@ -18,7 +18,7 @@ const DetailFormWrapper = styled(FormWrapper)`
   height: 650px;
 `;
 
-const RadioWrapper = styled.div`
+export const RadioWrapper = styled.div`
   font-size: 2rem;
   span {
     margin-right: 200px;
@@ -63,19 +63,8 @@ export const OfficerDetail = (officer: IOfficer) => {
       : setErrorMessage({ visible: false, message: "" });
   }, [messageForUser, isLoading]);
 
-  const formVerification = () => {
-    const mailRexExp = new RegExp(/^[^\s@]+@[^\s@]+\.[^\s@]+$/);
-    if (!officerData.email.match(mailRexExp)) {
-      setErrorMessage({ visible: true, message: "Incorrect Email" });
-      return;
-    }
-    return true;
-  };
-
   const onConfirmHandler = () => {
-    if (formVerification()) {
-      dispatch(editOfficerById(officerData));
-    } else return;
+    dispatch(editOfficerById(officerData));
   };
 
   const onExitHandler = () => {

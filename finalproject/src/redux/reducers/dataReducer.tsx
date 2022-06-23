@@ -9,6 +9,7 @@ const InitialState = {
     message: null,
   },
   officerOnEdit: {},
+  caseOnEdit: {},
 };
 interface IDataState {
   officers: object[];
@@ -16,6 +17,7 @@ interface IDataState {
   isFetching: boolean;
   messageForUser: object;
   officerOnEdit: object;
+  caseOnEdit: object;
 }
 
 export const dataReducer = (state: IDataState = InitialState, action: any) => {
@@ -83,21 +85,13 @@ export const dataReducer = (state: IDataState = InitialState, action: any) => {
         ...state,
         isFetching: false,
       };
-    // case "RESET_DATA_STATE":
-    //   return {
-    //     ...state,
-    //     messageForUser: {
-    //       type: null,
-    //       message: null,
-    //     },
-    //   };
     case "EDIT_OFFICER_OPENED":
-      const obj = action.payload;
-      delete obj.password;
+      const officerObj = action.payload;
+      delete officerObj.password;
 
       return {
         ...state,
-        officerOnEdit: obj,
+        officerOnEdit: officerObj,
       };
     case "EDIT_OFFICER_DATA_STARTED":
       return {
@@ -123,6 +117,49 @@ export const dataReducer = (state: IDataState = InitialState, action: any) => {
           type: null,
           message: null,
         },
+      };
+    case "GET_ALL_CASES_STARTED":
+      return {
+        ...state,
+        isFetching: true,
+      };
+    case "GET_ALL_CASES_SUCCESS":
+      return {
+        ...state,
+        cases: action.payload,
+        isFetching: false,
+      };
+    case "GET_ALL_CASES_FAILURE":
+      return {
+        ...state,
+        isFetching: false,
+        messageForUser: {
+          type: "error",
+          message: action.payload,
+        },
+      };
+    case "DELETE_CASE_BY_ID_STARTED":
+      return {
+        ...state,
+        isFetching: true,
+      };
+    case "DELETE_CASE_BY_ID_SUCCESS":
+      return {
+        ...state,
+        isFetching: false,
+      };
+    case "DELETE_CASE_BY_ID_FAILURE":
+      return {
+        ...state,
+        isFetching: false,
+      };
+
+    case "EDIT_CASE_OPENED":
+      const caseObj = action.payload;
+      delete caseObj.password;
+      return {
+        ...state,
+        caseOnEdit: caseObj,
       };
     default:
       return state;
