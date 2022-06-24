@@ -7,10 +7,15 @@ import {
   DELETE_OFFICER_BY_ID_FAILURE,
   DELETE_OFFICER_BY_ID_STARTED,
   DELETE_OFFICER_BY_ID_SUCCESS,
+  EDIT_CASE_BY_ID_FAILURE,
+  EDIT_CASE_BY_ID_STARTED,
+  EDIT_CASE_BY_ID_SUCCESS,
+  EDIT_CASE_CLOSED,
   EDIT_CASE_OPENED,
+  EDIT_OFFICER_BY_ID_FAILURE,
+  EDIT_OFFICER_BY_ID_STARTED,
+  EDIT_OFFICER_BY_ID_SUCCESS,
   EDIT_OFFICER_CLOSED,
-  EDIT_OFFICER_DATA_STARTED,
-  EDIT_OFFICER_DATA_SUCCESS,
   EDIT_OFFICER_OPENED,
   GETALLOFFICERS_FAILURE,
   GETALLOFFICERS_STARTED,
@@ -34,6 +39,7 @@ import { IOfficer } from "../../components/Officers/Officers";
 import { ITheft } from "../../components/TheftArchieve/TheftArchieve";
 
 const token: any = localStorage.getItem("token");
+const myClientID = "b3281778-83ca-4e32-b31b-c6452857a6c6";
 
 const API_URL = "https://sf-final-project.herokuapp.com/api/";
 
@@ -177,7 +183,7 @@ export const deleteCaseById = (id: string) => {
 
 export const editOfficerById = (officer: IOfficer) => {
   return async (dispatch: TypedDispatch) => {
-    dispatch(editOfficerDataStarted(officer));
+    dispatch(editOfficerByIdStarted(officer));
     const response = fetchApiAuth(
       `officers/${officer._id}`,
       token,
@@ -187,13 +193,74 @@ export const editOfficerById = (officer: IOfficer) => {
     response
       .then((res) => {
         if (res.status === "ERR") {
-          dispatch(editOfficerDataFailure(res.message));
+          dispatch(editOfficerByIdFailure(res.message));
         }
         if (res.status === "OK") {
-          dispatch(editOfficerDataSuccess(res.data));
+          dispatch(editOfficerByIdSuccess(res.data));
           setTimeout(() => {
             history.replace("/officers");
           }, 500);
+        }
+      })
+      .catch((error) => {
+        throw new Error(error);
+      });
+  };
+};
+
+export const EditCaseById = (theft: ITheft) => {
+  return async (dispatch: TypedDispatch) => {
+    dispatch(editCaseByIdStarted());
+    const response = fetchApiAuth(`cases/${theft._id}`, token, "PUT", theft);
+    response
+      .then((res) => {
+        if (res.status === "ERR") {
+          dispatch(editCaseByIdFailure(res.message));
+        }
+        if (res.status === "OK") {
+          dispatch(editCaseByIdSuccess(res.data));
+          setTimeout(() => {
+            history.replace("/archieve");
+            dispatch(editCaseClosed());
+          }, 500);
+        }
+      })
+      .catch((error) => {
+        throw new Error(error);
+      });
+  };
+};
+
+export const getAllOfficers = () => {
+  return async (dispatch: TypedDispatch) => {
+    dispatch(getAllOfficersStarted());
+    const response = fetchApiAuth("officers/", token, "GET");
+    response
+      .then((res) => {
+        if (!res) {
+          dispatch(getAllOfficersFailure());
+        }
+        if (res) {
+          dispatch(getAllOfficersSuccess(res.officers));
+        }
+      })
+      .catch((error) => {
+        throw new Error(error);
+      });
+  };
+};
+
+export const getAllCases = () => {
+  return async (dispatch: TypedDispatch) => {
+    dispatch(getAllCasesStarted());
+    const response = fetchApiAuth("cases/", token, "GET");
+    response
+      .then((res) => {
+        if (res.status === "ERR") {
+          dispatch(getAllCasesFailure);
+        }
+        if (res.status === "OK") {
+          dispatch(getAllCasesSuccess(res.data));
         }
       })
       .catch((error) => {
@@ -250,44 +317,6 @@ export const signInFailure = (error: any) => {
 export const logOut = () => {
   return {
     type: LOGOUT,
-  };
-};
-
-export const getAllOfficers = () => {
-  return async (dispatch: TypedDispatch) => {
-    dispatch(getAllOfficersStarted());
-    const response = fetchApiAuth("officers/", token, "GET");
-    response
-      .then((res) => {
-        if (!res) {
-          dispatch(getAllOfficersFailure());
-        }
-        if (res) {
-          dispatch(getAllOfficersSuccess(res.officers));
-        }
-      })
-      .catch((error) => {
-        throw new Error(error);
-      });
-  };
-};
-
-export const getAllCases = () => {
-  return async (dispatch: TypedDispatch) => {
-    dispatch(getAllCasesStarted());
-    const response = fetchApiAuth("cases/", token, "GET");
-    response
-      .then((res) => {
-        if (res.status === "ERR") {
-          dispatch(getAllCasesFailure);
-        }
-        if (res.status === "OK") {
-          dispatch(getAllCasesSuccess(res.data));
-        }
-      })
-      .catch((error) => {
-        throw new Error(error);
-      });
   };
 };
 
@@ -361,28 +390,28 @@ export const editOfficerOpened = (officer: object) => {
   };
 };
 
-export const editOfficerDataStarted = (officer: IOfficer) => {
+export const editOfficerByIdStarted = (officer: IOfficer) => {
   return {
-    type: EDIT_OFFICER_DATA_STARTED,
+    type: EDIT_OFFICER_BY_ID_STARTED,
     payload: officer,
   };
 };
 
-export const editOfficerDataSuccess = (officer: IOfficer) => {
+export const editOfficerByIdSuccess = (officer: IOfficer) => {
   return {
-    type: EDIT_OFFICER_DATA_SUCCESS,
+    type: EDIT_OFFICER_BY_ID_SUCCESS,
     payload: officer,
   };
 };
 
-export const editOfficerDataFailure = (error: any) => {
+export const editOfficerByIdFailure = (error: any) => {
   return {
-    type: EDIT_OFFICER_DATA_SUCCESS,
+    type: EDIT_OFFICER_BY_ID_FAILURE,
     payload: error,
   };
 };
 
-export const editOfficerCloser = () => {
+export const editOfficerClosed = () => {
   return {
     type: EDIT_OFFICER_CLOSED,
   };
@@ -431,5 +460,31 @@ export const editCaseOpened = (theft: ITheft) => {
   return {
     type: EDIT_CASE_OPENED,
     payload: theft,
+  };
+};
+
+export const editCaseByIdStarted = () => {
+  return {
+    type: EDIT_CASE_BY_ID_STARTED,
+  };
+};
+
+export const editCaseByIdSuccess = (theft: ITheft) => {
+  return {
+    type: EDIT_CASE_BY_ID_SUCCESS,
+    payload: theft,
+  };
+};
+
+export const editCaseByIdFailure = (error: string) => {
+  return {
+    type: EDIT_CASE_BY_ID_FAILURE,
+    payload: error,
+  };
+};
+
+export const editCaseClosed = () => {
+  return {
+    type: EDIT_CASE_CLOSED,
   };
 };

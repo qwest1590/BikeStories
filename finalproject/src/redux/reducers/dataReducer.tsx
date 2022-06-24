@@ -93,18 +93,18 @@ export const dataReducer = (state: IDataState = InitialState, action: any) => {
         ...state,
         officerOnEdit: officerObj,
       };
-    case "EDIT_OFFICER_DATA_STARTED":
+    case "EDIT_OFFICER_BY_ID_STARTED":
       return {
         ...state,
         isFetching: true,
         officerOnEdit: action.payload,
       };
-    case "EDIT_OFFICER_DATA_SUCCESS":
+    case "EDIT_OFFICER_BY_ID_SUCCESS":
       return {
         ...state,
         isFetching: false,
       };
-    case "EDIT_OFFICER_DATA_FAILURE":
+    case "EDIT_OFFICER_BY_ID_FAILURE":
       return {
         ...state,
         isFetching: false,
@@ -160,6 +160,37 @@ export const dataReducer = (state: IDataState = InitialState, action: any) => {
       return {
         ...state,
         caseOnEdit: caseObj,
+      };
+    case "EDIT_CASE_CLOSED":
+      return {
+        ...state,
+        messageForUser: {
+          type: null,
+          message: null,
+        },
+      };
+    case "EDIT_CASE_BY_ID_STARTED":
+      return {
+        ...state,
+        isFetching: true,
+      };
+    case "EDIT_CASE_BY_ID_SUCCESS":
+      return {
+        ...state,
+        isFetching: false,
+        messageForUser: {
+          type: "success",
+          message: "Case was successfully edited",
+        },
+      };
+    case "EDIT_CASE_BY_ID_FAILURE":
+      return {
+        ...state,
+        isFetching: false,
+        messageForUser: {
+          type: "error",
+          message: action.payload,
+        },
       };
     default:
       return state;

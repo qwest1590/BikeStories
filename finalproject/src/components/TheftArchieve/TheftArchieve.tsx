@@ -134,7 +134,7 @@ export const TheftArchieve = () => {
               <TheftNumber>{index}</TheftNumber>
               <FullName>{cutLongString(theft.ownerFullName, 17)}</FullName>
               <CreatedAt>{cutLongString(theft.createdAt, 10)}</CreatedAt>
-              <Status>{cutLongString(theft.type, 20)}</Status>
+              <Status>{theft.status}</Status>
               <ButtonWrapper>
                 {" "}
                 <DeleteButton onClick={() => onDeleteHandler(theft._id)}>

@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
-import { useAppSelector } from "../..";
+import { useAppSelector, useTypedDispatch } from "../..";
 import {
   ArchieveHeader,
   ArchievePageWrapper,
@@ -20,6 +20,8 @@ import dayjs from "dayjs";
 import { RadioWrapper } from "../OfficerDetail/OfficerDetail";
 import { Spinner } from "../Spinner/Spinner";
 import { TextArea, TextAreaWrapper } from "../ReportPage/ReportPage";
+import { useDispatch } from "react-redux";
+import { EditCaseById } from "../../redux/actions/actions";
 
 const TheftDelailFormWrapper = styled(FormWrapper)`
   height: 1300px;
@@ -43,29 +45,39 @@ export const TheftDetail = (theft: ITheft) => {
   const navigate = useNavigate();
   const isLoading = useAppSelector((state) => state.data.isFetching);
   const [theftData, setTheftData] = useState(theft);
-  const messageForUser = useAppSelector((state) => state.data.messageForUser);
-  const officers = useAppSelector((state) => state.data.officers);
-  const approvedOfficers = officers.filter(
-    (officer: IOfficer) => officer.approved === true
-  );
-
-  const dateForInput = dayjs(theftData.date).format("YYYY-MM-DD");
-
-  const dateToStringCreated = dayjs(theftData.createdAt).format(
-    "DD/MM/YYYY  HH:mm:ss"
-  );
-
-  const dateToStringUpdated = dayjs(theftData.updatedAt).format(
-    "DD/MM/YYYY  HH:mm:ss"
-  );
-
   const [errorMessage, setErrorMessage] = useState({
     visible: false,
     message: "",
   });
+  const messageForUser = useAppSelector((state) => state.data.messageForUser);
+  const officers = useAppSelector((state) => state.data.officers);
+  const dispatch = useTypedDispatch();
+  const approvedOfficers = officers.filter(
+    (officer: IOfficer) => officer.approved === true
+  );
+
+  useEffect(() => {
+    messageForUser.message !== null
+      ? setErrorMessage({ visible: true, message: messageForUser.message })
+      : setErrorMessage({ visible: false, message: "" });
+  }, [messageForUser, isLoading]);
+
+  const dateForInput = dayjs(theftData.date).format("YYYY-MM-DD");
+  const dateToStringCreated = dayjs(theftData.createdAt).format(
+    "DD/MM/YYYY  HH:mm:ss"
+  );
+  const dateToStringUpdated = dayjs(theftData.updatedAt).format(
+    "DD/MM/YYYY  HH:mm:ss"
+  );
 
   const onExitHandler = () => {
     navigate("/archieve");
+  };
+
+  const onSubmitHandler = (theftData: ITheft) => {
+    if (formVerification()) {
+      dispatch(EditCaseById(theftData));
+    } else return;
   };
 
   const onChangeOfficerDropdown = (value: string) => {
@@ -80,6 +92,18 @@ export const TheftDetail = (theft: ITheft) => {
       ...prevState,
       type: value,
     }));
+  };
+
+  const formVerification = () => {
+    if (theftData.licenseNumber === "") {
+      setErrorMessage({ visible: true, message: "Licence № cannot be Empty" });
+      return;
+    }
+    if (theftData.ownerFullName === "") {
+      setErrorMessage({ visible: true, message: "Fullname cannot be Empty" });
+      return;
+    }
+    return true;
   };
 
   return (
@@ -216,11 +240,11 @@ export const TheftDetail = (theft: ITheft) => {
                   onChange={() =>
                     setTheftData((prevState) => ({
                       ...prevState,
-                      status: "In Progress",
+                      status: "in_progress",
                     }))
                   }
                   type={"radio"}
-                  checked={theftData.status === "In Progress" ? true : false}
+                  checked={theftData.status === "in_progress" ? true : false}
                 ></input>{" "}
               </label>
               <label>
@@ -229,11 +253,11 @@ export const TheftDetail = (theft: ITheft) => {
                   onChange={() =>
                     setTheftData((prevState) => ({
                       ...prevState,
-                      status: "Done",
+                      status: "done",
                     }))
                   }
                   type={"radio"}
-                  checked={theftData.status === "Done" ? true : false}
+                  checked={theftData.status === "done" ? true : false}
                 ></input>
               </label>
             </LabelInput>
@@ -243,7 +267,7 @@ export const TheftDetail = (theft: ITheft) => {
               {" "}
               Additional information:
               <AdditionalInfo
-                readOnly={theftData.status === "Done" ? false : true}
+                readOnly={theftData.status === "done" ? false : true}
                 onChange={(e) =>
                   setTheftData((prevState) => ({
                     ...prevState,
@@ -258,6 +282,7 @@ export const TheftDetail = (theft: ITheft) => {
             color={"#0aa758"}
             children={<Spinner></Spinner>}
             isLoading={isLoading}
+            onClick={() => onSubmitHandler(theftData)}
           ></Button>
         </form>
       </TheftDelailFormWrapper>

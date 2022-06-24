@@ -11,7 +11,10 @@ import { ErrorMessage, FormWrapper } from "../Registration/Registration";
 import { LabelInput } from "../Registration/Registration";
 import { Spinner } from "../Spinner/Spinner";
 import { useAppSelector, useTypedDispatch } from "../..";
-import { editOfficerById } from "../../redux/actions/actions";
+import {
+  editOfficerById,
+  editOfficerClosed,
+} from "../../redux/actions/actions";
 import { useNavigate } from "react-router-dom";
 
 const DetailFormWrapper = styled(FormWrapper)`
@@ -69,6 +72,7 @@ export const OfficerDetail = (officer: IOfficer) => {
 
   const onExitHandler = () => {
     navigate("/officers");
+    dispatch(editOfficerClosed());
   };
 
   return (
