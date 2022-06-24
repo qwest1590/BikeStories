@@ -100,7 +100,7 @@ export const ReportPage = () => {
     type: "",
     color: "",
     date: dateForInput,
-    additionalInfo: "",
+    description: "",
     clientId: clientId,
   };
 
@@ -270,7 +270,7 @@ export const ReportPage = () => {
                 onChange={(e) =>
                   setReportCase((prevState) => ({
                     ...prevState,
-                    additionalInfo: e.target.value,
+                    description: e.target.value,
                   }))
                 }
               ></TextArea>
@@ -280,6 +280,7 @@ export const ReportPage = () => {
             color="#02CCAF"
             name="Send Report"
             onClick={onSubmitHandler}
+            isLoading={isLoading}
           ></Button>
         </form>
       </ReportFormWrapper>

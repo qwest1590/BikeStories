@@ -20,11 +20,10 @@ import dayjs from "dayjs";
 import { RadioWrapper } from "../OfficerDetail/OfficerDetail";
 import { Spinner } from "../Spinner/Spinner";
 import { TextArea, TextAreaWrapper } from "../ReportPage/ReportPage";
-import { useDispatch } from "react-redux";
 import { EditCaseById } from "../../redux/actions/actions";
 
 const TheftDelailFormWrapper = styled(FormWrapper)`
-  height: 1300px;
+  height: 1450px;
   @media (max-width: 640px) {
     width: 355px;
   }
@@ -35,7 +34,7 @@ const TheftDelailFormWrapper = styled(FormWrapper)`
   }
 `;
 
-const AdditionalInfo = styled(TextArea)`
+const Comment = styled(TextArea)`
   @media (max-width: 640px) {
     width: 315px;
   }
@@ -265,8 +264,15 @@ export const TheftDetail = (theft: ITheft) => {
           <TextAreaWrapper>
             <label>
               {" "}
-              Additional information:
-              <AdditionalInfo
+              Additional Info:
+              <Comment readOnly defaultValue={theftData.description}></Comment>
+            </label>
+          </TextAreaWrapper>
+          <TextAreaWrapper>
+            <label>
+              {" "}
+              Resolution:
+              <Comment
                 readOnly={theftData.status === "done" ? false : true}
                 onChange={(e) =>
                   setTheftData((prevState) => ({
@@ -274,7 +280,8 @@ export const TheftDetail = (theft: ITheft) => {
                     resolution: e.target.value,
                   }))
                 }
-              ></AdditionalInfo>
+                defaultValue={theftData.resolution}
+              ></Comment>
             </label>
           </TextAreaWrapper>
           <Button
