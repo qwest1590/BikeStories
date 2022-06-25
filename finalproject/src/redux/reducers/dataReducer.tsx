@@ -1,4 +1,6 @@
+import { Action } from "history";
 import { Officers } from "../../components/Officers/Officers";
+import { ITheft } from "../../components/TheftArchive/TheftArchive";
 
 const InitialState = {
   officers: [],
@@ -13,7 +15,7 @@ const InitialState = {
 };
 interface IDataState {
   officers: object[];
-  cases: object[];
+  cases: ITheft[];
   isFetching: boolean;
   messageForUser: object;
   officerOnEdit: object;
@@ -85,6 +87,7 @@ export const dataReducer = (state: IDataState = InitialState, action: any) => {
         ...state,
         isFetching: false,
       };
+
     case "EDIT_OFFICER_OPENED":
       const officerObj = action.payload;
       delete officerObj.password;
@@ -161,37 +164,12 @@ export const dataReducer = (state: IDataState = InitialState, action: any) => {
         ...state,
         caseOnEdit: caseObj,
       };
-    case "EDIT_CASE_CLOSED":
-      return {
-        ...state,
-        messageForUser: {
-          type: null,
-          message: null,
-        },
-      };
     case "EDIT_CASE_BY_ID_STARTED":
       return {
         ...state,
         isFetching: true,
       };
-    case "EDIT_CASE_BY_ID_SUCCESS":
-      return {
-        ...state,
-        isFetching: false,
-        messageForUser: {
-          type: "success",
-          message: "Case was successfully edited",
-        },
-      };
-    case "EDIT_CASE_BY_ID_FAILURE":
-      return {
-        ...state,
-        isFetching: false,
-        messageForUser: {
-          type: "error",
-          message: action.payload,
-        },
-      };
+
     default:
       return state;
   }

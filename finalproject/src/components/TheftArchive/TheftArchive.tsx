@@ -70,13 +70,13 @@ export interface ITheft {
   createdAt: string;
   updatedAt?: Date;
   color?: string;
-  date: Date;
+  date: Date | string;
   officer?: string;
   description?: string;
   resolution?: string;
 }
 
-export const TheftArchieve = () => {
+export const TheftArchive = () => {
   const [refreshList, setRefreshList] = useState(false);
   const day = dayjs().format("DD/MM/YYYY");
   const cases = useAppSelector((state) => state.data.cases);

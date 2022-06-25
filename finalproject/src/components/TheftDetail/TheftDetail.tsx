@@ -5,7 +5,7 @@ import {
   ArchieveHeader,
   ArchievePageWrapper,
   ITheft,
-} from "../TheftArchieve/TheftArchieve";
+} from "../TheftArchive/TheftArchive";
 import theftImg from "../../images/theft.jpg";
 import { Button } from "../Button/Button";
 import { useNavigate } from "react-router-dom";
@@ -52,8 +52,16 @@ export const TheftDetail = (theft: ITheft) => {
   const officers = useAppSelector((state) => state.data.officers);
   const dispatch = useTypedDispatch();
   const approvedOfficers = officers.filter(
-    (officer: IOfficer) => officer.approved === true
+    (officer: IOfficer) => officer.approved
   );
+
+  // console.log(approvedOfficers);
+  // const makeLabelForHiredOfficer = () => {
+  //   const index = approvedOfficers.indexOf(theftData.officer);
+  //   if (index !== -1) {
+  //     return `${approvedOfficers[index].firstName} ${approvedOfficers[index].lastName}`;
+  //   } else return "Officer Was Hired";
+  // };
 
   useEffect(() => {
     messageForUser.message !== null
@@ -70,7 +78,7 @@ export const TheftDetail = (theft: ITheft) => {
   );
 
   const onExitHandler = () => {
-    navigate("/archieve");
+    navigate("/cases");
   };
 
   const onSubmitHandler = (theftData: ITheft) => {
@@ -158,10 +166,16 @@ export const TheftDetail = (theft: ITheft) => {
           </LabelInput>
 
           <Dropdown
-            options={approvedOfficers.map(
-              (officer: IOfficer) => officer.firstName + " " + officer.lastName
-            )}
-            label="Choose the Officer"
+            options={approvedOfficers.map((officer: IOfficer) => [
+              officer.firstName + " " + officer.lastName,
+              officer._id,
+            ])}
+            label={
+              theftData.officer == null
+                ? "Choose the Officer"
+                : // : makeLabelForHiredOfficer()
+                  "sd"
+            }
             description="Employe: "
             onChange={onChangeOfficerDropdown}
           ></Dropdown>
@@ -184,7 +198,9 @@ export const TheftDetail = (theft: ITheft) => {
 
           <Dropdown
             options={["Sport ", "General"]}
-            label="Choose the Type"
+            label={
+              theftData.type.charAt(0).toUpperCase() + theftData.type.slice(1)
+            }
             description="Type of Bike: "
             onChange={onChangeTypeDropdown}
           ></Dropdown>

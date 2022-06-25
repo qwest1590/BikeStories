@@ -36,7 +36,7 @@ import {
 } from "../types/types";
 import { history, TypedDispatch } from "../..";
 import { IOfficer } from "../../components/Officers/Officers";
-import { ITheft } from "../../components/TheftArchieve/TheftArchieve";
+import { ITheft } from "../../components/TheftArchive/TheftArchive";
 
 const token: any = localStorage.getItem("token");
 const myClientID = "b3281778-83ca-4e32-b31b-c6452857a6c6";
@@ -56,8 +56,8 @@ const fetchApiPostUnAuth = async (url: string, body: object) => {
 
 const fetchApiAuth = async (
   url: string,
-  token: string,
   method: string,
+  token?: string,
   body?: any
 ) => {
   const response = await fetch(API_URL + url, {
@@ -116,7 +116,7 @@ export const signInUser = (user: object) => {
   };
 };
 
-export const reportATheft = (theft: object) => {
+export const reportATheftPublic = (theft: ITheft) => {
   return async (dispatch: TypedDispatch) => {
     dispatch(reportATheftStarted());
     const response = fetchApiPostUnAuth("public/report", theft);
@@ -141,10 +141,35 @@ export const reportATheft = (theft: object) => {
   };
 };
 
+export const reportATheftAuth = (theft: ITheft) => {
+  return async (dispatch: TypedDispatch) => {
+    dispatch(reportATheftStarted());
+    const response = fetchApiAuth("cases", "POST", token, theft);
+    response
+      .then((res) => {
+        if (res.status === "ERR") {
+          dispatch(reportATheftFailure(res.message));
+        }
+        if (res.status === "OK") {
+          dispatch(reportATheftSuccess());
+          setTimeout(() => {
+            history.replace("/");
+          }, 1000);
+          setTimeout(() => {
+            dispatch(clearDataMessage());
+          }, 1200);
+        }
+      })
+      .catch((error) => {
+        throw new Error(error);
+      });
+  };
+};
+
 export const deleteOfficerById = (id: string) => {
   return async (dispatch: TypedDispatch) => {
     dispatch(deleteOfficerByIdStarted());
-    const response = fetchApiAuth(`officers/${id}`, token, "DELETE");
+    const response = fetchApiAuth(`officers/${id}`, "DELETE", token);
     response
       .then((res) => {
         if (res.status === "ERR") {
@@ -164,7 +189,7 @@ export const deleteOfficerById = (id: string) => {
 export const deleteCaseById = (id: string) => {
   return async (dispatch: TypedDispatch) => {
     dispatch(deleteCaseByIdStarted());
-    const response = fetchApiAuth(`cases/${id}`, token, "DELETE");
+    const response = fetchApiAuth(`cases/${id}`, "DELETE", token);
     response
       .then((res) => {
         if (res.status === "ERR") {
@@ -186,8 +211,9 @@ export const editOfficerById = (officer: IOfficer) => {
     dispatch(editOfficerByIdStarted(officer));
     const response = fetchApiAuth(
       `officers/${officer._id}`,
-      token,
       "PUT",
+      token,
+
       officer
     );
     response
@@ -211,7 +237,7 @@ export const editOfficerById = (officer: IOfficer) => {
 export const EditCaseById = (theft: ITheft) => {
   return async (dispatch: TypedDispatch) => {
     dispatch(editCaseByIdStarted());
-    const response = fetchApiAuth(`cases/${theft._id}`, token, "PUT", theft);
+    const response = fetchApiAuth(`cases/${theft._id}`, "PUT", token, theft);
     response
       .then((res) => {
         if (res.status === "ERR") {
@@ -220,7 +246,7 @@ export const EditCaseById = (theft: ITheft) => {
         if (res.status === "OK") {
           dispatch(editCaseByIdSuccess(res.data));
           setTimeout(() => {
-            history.replace("/archieve");
+            history.replace("/cases");
             dispatch(editCaseClosed());
           }, 500);
         }
@@ -234,7 +260,7 @@ export const EditCaseById = (theft: ITheft) => {
 export const getAllOfficers = () => {
   return async (dispatch: TypedDispatch) => {
     dispatch(getAllOfficersStarted());
-    const response = fetchApiAuth("officers/", token, "GET");
+    const response = fetchApiAuth("officers/", "GET", token);
     response
       .then((res) => {
         if (!res) {
@@ -253,7 +279,7 @@ export const getAllOfficers = () => {
 export const getAllCases = () => {
   return async (dispatch: TypedDispatch) => {
     dispatch(getAllCasesStarted());
-    const response = fetchApiAuth("cases/", token, "GET");
+    const response = fetchApiAuth("cases/", "GET", token);
     response
       .then((res) => {
         if (res.status === "ERR") {

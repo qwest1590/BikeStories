@@ -283,8 +283,8 @@ export const Main = () => {
         <StuffPanel>
           <Button
             color="#02CCAF"
-            name="Archieve"
-            onClick={() => navigate("/archieve")}
+            name="Archive"
+            onClick={() => navigate("/cases")}
           ></Button>
           <Button
             color="#02CCAF"

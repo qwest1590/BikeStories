@@ -5,10 +5,7 @@ import background from "./images/bicycleRiding.jpg";
 import { Registration } from "./components/Registration/Registration";
 import { Home } from "./components/Home/Home";
 import { ReportPage } from "./components/ReportPage/ReportPage";
-import {
-  ITheft,
-  TheftArchieve,
-} from "./components/TheftArchieve/TheftArchieve";
+import { ITheft, TheftArchive } from "./components/TheftArchive/TheftArchive";
 import { IOfficer, Officers } from "./components/Officers/Officers";
 import { useAppSelector } from ".";
 import { OfficerDetail } from "./components/OfficerDetail/OfficerDetail";
@@ -79,16 +76,13 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/registration" element={<Registration />} />
         <Route path="/report" element={<ReportPage />} />
-        <Route path="/archieve" element={<TheftArchieve />} />
+        <Route path="/cases" element={<TheftArchive />} />
         <Route path="/officers" element={<Officers />} />
         <Route
-          path={`/officers/${officerOnEdit._id}`}
+          path={`/officers/:id`}
           element={<OfficerDetail {...officerOnEdit} />}
         />
-        <Route
-          path={`/cases/${caseOnEdit._id}`}
-          element={<TheftDetail {...caseOnEdit} />}
-        />
+        <Route path={`/cases/:id`} element={<TheftDetail {...caseOnEdit} />} />
       </Routes>
     </AppWrapper>
   );

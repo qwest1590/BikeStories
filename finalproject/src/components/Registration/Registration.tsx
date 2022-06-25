@@ -113,12 +113,13 @@ const Header = styled.div`
 `;
 
 export const Registration = () => {
+  const myClientID = "b3281778-83ca-4e32-b31b-c6452857a6c6";
   const [newOfficer, setNewOfficer] = useState({
     email: "",
     firstName: "",
     lastName: "",
     password: "",
-    clientId: "",
+    clientId: myClientID,
     approved: false,
   });
 
@@ -269,6 +270,7 @@ export const Registration = () => {
               <label>
                 ClientID:
                 <input
+                  defaultValue={myClientID}
                   type={"text"}
                   placeholder="Your ClientID"
                   onChange={(e) =>

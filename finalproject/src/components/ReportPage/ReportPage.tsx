@@ -9,9 +9,14 @@ import { ErrorMessage } from "../Registration/Registration";
 import { Dropdown } from "../Dropdown/Dropdown";
 import dayjs from "dayjs";
 import { useAppSelector, useTypedDispatch } from "../..";
-import { reportATheft } from "../../redux/actions/actions";
+import {
+  reportATheftAuth,
+  reportATheftPublic,
+} from "../../redux/actions/actions";
 import { clientId } from "../../redux/types/types";
-import { IOfficer } from "../Officers/Officers";
+import { IOfficer, Officer } from "../Officers/Officers";
+import { Spinner } from "../Spinner/Spinner";
+import { ITheft } from "../TheftArchive/TheftArchive";
 const PageWrapper = styled.div`
   background: #000000d3;
   height: auto;
@@ -93,11 +98,14 @@ export const ReportPage = () => {
     (officer: IOfficer) => officer.approved === true
   );
 
-  const intitialState = {
-    officer: "",
+  const intitialState: ITheft = {
+    _id: "",
+    status: "",
+    createdAt: "",
     licenseNumber: "",
     ownerFullName: "",
     type: "",
+    officer: "",
     color: "",
     date: dateForInput,
     description: "",
@@ -143,8 +151,10 @@ export const ReportPage = () => {
 
   const onSubmitHandler = (e: React.MouseEvent) => {
     e.preventDefault();
-    if (formVerification()) {
-      dispatch(reportATheft(reportCase));
+    if (formVerification() && loginned) {
+      dispatch(reportATheftAuth(reportCase));
+    } else if (formVerification()) {
+      dispatch(reportATheftPublic(reportCase));
     } else return;
   };
 
@@ -190,10 +200,10 @@ export const ReportPage = () => {
         <form>
           {loginned !== null ? (
             <Dropdown
-              options={approvedOfficers.map(
-                (officer: IOfficer) =>
-                  officer.firstName + " " + officer.lastName
-              )}
+              options={approvedOfficers.map((officer: IOfficer) => [
+                officer.firstName + " " + officer.lastName,
+                officer._id,
+              ])}
               label="Choose the Officer"
               description="Employe: "
               onChange={onChangeOfficerDropdown}
@@ -281,6 +291,7 @@ export const ReportPage = () => {
             name="Send Report"
             onClick={onSubmitHandler}
             isLoading={isLoading}
+            children={<Spinner />}
           ></Button>
         </form>
       </ReportFormWrapper>

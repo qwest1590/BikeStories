@@ -347,6 +347,11 @@ export const Header = () => {
               <label>
                 Enter your password: <br></br>
                 <input
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                      onSubmitHandler();
+                    }
+                  }}
                   className="short"
                   type={"password"}
                   onChange={(e) =>

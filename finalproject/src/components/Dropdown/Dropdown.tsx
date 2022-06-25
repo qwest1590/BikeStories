@@ -79,14 +79,16 @@ export const Dropdown = ({
                 <li key={item}>
                   <DropdownItem
                     onClick={(e) => {
-                      onChange(e.currentTarget.innerText.toLowerCase());
+                      Array.isArray(item)
+                        ? onChange(item[1])
+                        : onChange(e.currentTarget.innerText.toLowerCase());
                       setDropdown({
                         isOpen: false,
                         labelText: e.currentTarget.innerText,
                       });
                     }}
                   >
-                    {item}
+                    {Array.isArray(item) ? item[0] : item}
                   </DropdownItem>
                 </li>
               ))

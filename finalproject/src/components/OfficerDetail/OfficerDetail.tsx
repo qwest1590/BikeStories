@@ -15,7 +15,7 @@ import {
   editOfficerById,
   editOfficerClosed,
 } from "../../redux/actions/actions";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 const DetailFormWrapper = styled(FormWrapper)`
   height: 650px;
@@ -54,7 +54,6 @@ export const OfficerDetail = (officer: IOfficer) => {
   const messageForUser = useAppSelector((state) => state.data.messageForUser);
   const dispatch = useTypedDispatch();
   const navigate = useNavigate();
-
   const [errorMessage, setErrorMessage] = useState({
     visible: false,
     message: "",
