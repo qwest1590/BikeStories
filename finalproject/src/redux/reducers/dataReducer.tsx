@@ -1,6 +1,6 @@
 import { Action } from "history";
-import { Officers } from "../../components/Officers/Officers";
-import { ITheft } from "../../components/TheftArchive/TheftArchive";
+import { IOfficer, Officers } from "../../components/pages/Officers/Officers";
+import { ITheft } from "../../components/pages/TheftArchive/TheftArchive";
 
 const InitialState = {
   officers: [],
@@ -14,7 +14,7 @@ const InitialState = {
   caseOnEdit: {},
 };
 interface IDataState {
-  officers: object[];
+  officers: IOfficer[];
   cases: ITheft[];
   isFetching: boolean;
   messageForUser: object;
@@ -78,9 +78,16 @@ export const dataReducer = (state: IDataState = InitialState, action: any) => {
         isFetching: true,
       };
     case "DELETE_OFFICER_BY_ID_SUCCESS":
+      const officersCopy = [...state.officers];
+      const deletedOfficer: IOfficer[] = officersCopy.filter(
+        (officer) => officer._id === action.payload
+      );
+      const index = officersCopy.indexOf(deletedOfficer[0]);
+      officersCopy.splice(index, 1);
       return {
         ...state,
         isFetching: false,
+        officers: officersCopy,
       };
     case "DELETE_OFFFICER_BY_ID_FAILURE":
       return {
@@ -168,6 +175,10 @@ export const dataReducer = (state: IDataState = InitialState, action: any) => {
       return {
         ...state,
         isFetching: true,
+      };
+    case "RESET_DATA_STATE":
+      return {
+        ...InitialState,
       };
 
     default:

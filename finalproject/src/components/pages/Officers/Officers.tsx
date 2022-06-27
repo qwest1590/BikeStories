@@ -1,16 +1,18 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import styled, { css } from "styled-components";
-import { useAppSelector, useTypedDispatch } from "../..";
+import { useAppSelector, useTypedDispatch } from "../../..";
 import {
   deleteOfficerById,
   editOfficerOpened,
   getAllOfficers,
-} from "../../redux/actions/actions";
-import staff from "../../images/staff.jpg";
-import { Button } from "../Button/Button";
+  logOut,
+  resetDataState,
+} from "../../../redux/actions/actions";
+import staff from "../../../images/staff.jpg";
+import { Button } from "../../Button/Button";
 import { useNavigate } from "react-router-dom";
 import dayjs from "dayjs";
-import { Spinner } from "../Spinner/Spinner";
+import { Spinner } from "../../Spinner/Spinner";
 
 export const StaffPageWrapper = styled.div`
   background: linear-gradient(#3a9ad6, #02ccaf, #1526bd);
@@ -150,12 +152,11 @@ export interface IOfficer {
 }
 
 export const Officers = () => {
-  const [refreshList, setRefreshList] = useState(false);
   const dispatch = useTypedDispatch();
-  const officers = useAppSelector((state) => state.data.officers);
   const navigate = useNavigate();
   const day = dayjs().format("DD/MM/YYYY");
   const isLoading = useAppSelector((state) => state.data.isFetching);
+  const loginnedUserId = useAppSelector((state) => state.app.loginnedUser.id);
 
   const onExitClick = () => {
     navigate("/");
@@ -165,16 +166,29 @@ export const Officers = () => {
     dispatch(getAllOfficers());
   }, [dispatch]);
 
+  const officers: IOfficer[] = useAppSelector((state) => state.data.officers);
   const onDeleteHandler = (id: string) => {
+    if (id === loginnedUserId) {
+      let result = window.confirm(
+        "You are trying to delete yourself, you can do that, but it will result in an immediate logout. Are you sure?"
+      );
+      if (result) {
+        dispatch(deleteOfficerById(id));
+        dispatch(logOut());
+        dispatch(resetDataState());
+        return;
+      } else return;
+    }
     dispatch(deleteOfficerById(id));
-    setRefreshList(!refreshList);
   };
 
-  const cutLongString = (str: string, to: number) => {
-    const newStr = str;
-    if (newStr.length > to) {
-      return newStr.substring(0, to) + "...";
-    } else return newStr;
+  const cutLongString = (str: string | null, to: number) => {
+    if (str == null) {
+      return null;
+    }
+    if (str.length > to) {
+      return str.substring(0, to) + "...";
+    } else return str;
   };
 
   const onClickDetails = (officer: IOfficer) => {
@@ -200,7 +214,7 @@ export const Officers = () => {
         </div>
       </OfficerHeader>
 
-      {officers !== []
+      {officers
         ? officers.map((officer: IOfficer, index: any) => (
             <Officer key={officer._id}>
               <Number>{index}</Number>

@@ -59,7 +59,6 @@ export const Dropdown = ({
     isOpen: false,
     labelText: label,
   });
-
   return (
     <>
       {" "}

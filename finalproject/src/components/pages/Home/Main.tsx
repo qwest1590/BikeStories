@@ -1,9 +1,9 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
-import { useAppSelector } from "../..";
-import { Button } from "../Button/Button";
-import { Slider } from "../Slider/Slider";
+import { useAppSelector } from "../../..";
+import { Button } from "../../Button/Button";
+import { Slider } from "../../Slider/Slider";
 
 const MainWrapper = styled.div`
   background: linear-gradient(#3a9ad6, #02ccaf, #1526bd);

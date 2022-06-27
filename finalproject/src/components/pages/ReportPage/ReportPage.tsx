@@ -1,21 +1,21 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
-import { Button } from "../Button/Button";
+import { Button } from "../../Button/Button";
 import { FormWrapper, LabelInput } from "../Registration/Registration";
-import logo from "../../images/logo.jpg";
-import { Logo } from "../Header/Header";
+import logo from "../../../images/logo.jpg";
+import { Logo } from "../Home/Header";
 import { useNavigate } from "react-router-dom";
 import { ErrorMessage } from "../Registration/Registration";
-import { Dropdown } from "../Dropdown/Dropdown";
+import { Dropdown } from "../../Dropdown/Dropdown";
 import dayjs from "dayjs";
-import { useAppSelector, useTypedDispatch } from "../..";
+import { useAppSelector, useTypedDispatch } from "../../..";
 import {
   reportATheftAuth,
   reportATheftPublic,
-} from "../../redux/actions/actions";
-import { clientId } from "../../redux/types/types";
-import { IOfficer, Officer } from "../Officers/Officers";
-import { Spinner } from "../Spinner/Spinner";
+} from "../../../redux/actions/actions";
+import { clientId } from "../../../redux/types/types";
+import { IOfficer } from "../Officers/Officers";
+import { Spinner } from "../../Spinner/Spinner";
 import { ITheft } from "../TheftArchive/TheftArchive";
 const PageWrapper = styled.div`
   background: #000000d3;
@@ -94,9 +94,18 @@ export const ReportPage = () => {
   const messageForUser = useAppSelector((state) => state.data.messageForUser);
   const isLoading = useAppSelector((state) => state.data.isFetching);
   const officers = useAppSelector((state) => state.data.officers);
-  const approvedOfficers = officers.filter(
-    (officer: IOfficer) => officer.approved === true
-  );
+
+  const approvedForDropdown = () => {
+    const approvedOfficers = officers.filter(
+      (officer: IOfficer) => officer.approved
+    );
+    if (approvedOfficers.length > 0) {
+      return approvedOfficers.map((officer: IOfficer) => [
+        officer.firstName + " " + officer.lastName,
+        officer._id,
+      ]);
+    } else return [];
+  };
 
   const intitialState: ITheft = {
     _id: "",
@@ -200,10 +209,7 @@ export const ReportPage = () => {
         <form>
           {loginned !== null ? (
             <Dropdown
-              options={approvedOfficers.map((officer: IOfficer) => [
-                officer.firstName + " " + officer.lastName,
-                officer._id,
-              ])}
+              options={approvedForDropdown()}
               label="Choose the Officer"
               description="Employe: "
               onChange={onChangeOfficerDropdown}

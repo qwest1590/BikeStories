@@ -5,17 +5,17 @@ import {
   StaffPageHeader,
   StaffPageWrapper,
 } from "../Officers/Officers";
-import staff from "../../images/staff.jpg";
-import { Button } from "../Button/Button";
+import staff from "../../../images/staff.jpg";
+import { Button } from "../../Button/Button";
 import { ErrorMessage, FormWrapper } from "../Registration/Registration";
 import { LabelInput } from "../Registration/Registration";
-import { Spinner } from "../Spinner/Spinner";
-import { useAppSelector, useTypedDispatch } from "../..";
+import { Spinner } from "../../Spinner/Spinner";
+import { useAppSelector, useTypedDispatch } from "../../..";
 import {
   editOfficerById,
   editOfficerClosed,
-} from "../../redux/actions/actions";
-import { useNavigate, useParams } from "react-router-dom";
+} from "../../../redux/actions/actions";
+import { useNavigate } from "react-router-dom";
 
 const DetailFormWrapper = styled(FormWrapper)`
   height: 650px;

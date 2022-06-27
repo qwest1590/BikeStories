@@ -9,17 +9,17 @@ import {
   StaffPageHeader,
   StaffPageWrapper,
 } from "../Officers/Officers";
-import theftImg from "../../images/theft.jpg";
-import { Button } from "../Button/Button";
+import theftImg from "../../../images/theft.jpg";
+import { Button } from "../../Button/Button";
 import dayjs from "dayjs";
-import { useAppSelector, useTypedDispatch } from "../..";
+import { useAppSelector, useTypedDispatch } from "../../..";
 import { useNavigate } from "react-router-dom";
 import {
   deleteCaseById,
   editCaseOpened,
   getAllCases,
-} from "../../redux/actions/actions";
-import { Spinner } from "../Spinner/Spinner";
+} from "../../../redux/actions/actions";
+import { Spinner } from "../../Spinner/Spinner";
 
 export const ArchievePageWrapper = styled(StaffPageWrapper)``;
 
@@ -71,7 +71,7 @@ export interface ITheft {
   updatedAt?: Date;
   color?: string;
   date: Date | string;
-  officer?: string;
+  officer?: string | null;
   description?: string;
   resolution?: string;
 }

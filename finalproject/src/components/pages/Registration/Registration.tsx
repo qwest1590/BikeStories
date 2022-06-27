@@ -1,15 +1,14 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
-import { Background } from "../../App";
-import background from "../../images/bicycleRiding.jpg";
-import { Button } from "../Button/Button";
-import { Logo, CompanyName } from "../Header/Header";
-import logo from "../../images/logo.jpg";
+import { Background } from "../../../App";
+import background from "../../../images/bicycleRiding.jpg";
+import { Button } from "../../Button/Button";
+import { Logo, CompanyName } from "../Home/Header";
+import logo from "../../../images/logo.jpg";
 import { useNavigate } from "react-router-dom";
-import { clearMesssage, signUpUser } from "../../redux/actions/actions";
-import { useAppSelector, useTypedDispatch } from "../..";
-import { Spinner } from "../Spinner/Spinner";
-// import { clientId } from "../../redux/types/types";
+import { clearMesssage, signUpUser } from "../../../redux/actions/actions";
+import { useAppSelector, useTypedDispatch } from "../../..";
+import { Spinner } from "../../Spinner/Spinner";
 
 const PageWrapper = styled.div`
   height: 100vh;
@@ -125,6 +124,8 @@ export const Registration = () => {
 
   const messageForUser = useAppSelector((state) => state.app.messageForUser);
   const isLoading = useAppSelector((state) => state.app.isFetching);
+  const navigate = useNavigate();
+  const dispatch = useTypedDispatch();
 
   const [errorMessage, setErrorMessage] = useState({
     visible: false,
@@ -136,9 +137,6 @@ export const Registration = () => {
       ? setErrorMessage({ visible: true, message: messageForUser.message })
       : setErrorMessage({ visible: false, message: "" });
   }, [messageForUser, isLoading]);
-
-  const navigate = useNavigate();
-  const dispatch = useTypedDispatch();
 
   const formVerification = () => {
     const mailRexExp = new RegExp(/^[^\s@]+@[^\s@]+\.[^\s@]+$/);

@@ -2,22 +2,26 @@ import React from "react";
 import styled from "styled-components";
 import { Routes, Route } from "react-router-dom";
 import background from "./images/bicycleRiding.jpg";
-import { Registration } from "./components/Registration/Registration";
-import { Home } from "./components/Home/Home";
-import { ReportPage } from "./components/ReportPage/ReportPage";
-import { ITheft, TheftArchive } from "./components/TheftArchive/TheftArchive";
-import { IOfficer, Officers } from "./components/Officers/Officers";
+import { Registration } from "./components/pages/Registration/Registration";
+import { Home } from "./components/pages/Home/Home";
+import { ReportPage } from "./components/pages/ReportPage/ReportPage";
+import {
+  ITheft,
+  TheftArchive,
+} from "./components/pages/TheftArchive/TheftArchive";
+import { IOfficer, Officers } from "./components/pages/Officers/Officers";
 import { useAppSelector } from ".";
-import { OfficerDetail } from "./components/OfficerDetail/OfficerDetail";
-import { TheftDetail } from "./components/TheftDetail/TheftDetail";
+import { OfficerDetail } from "./components/pages/OfficerDetail/OfficerDetail";
+import { TheftDetail } from "./components/pages/TheftDetail/TheftDetail";
+import { ErrorPage } from "./components/pages/ErrorPage/ErrorPage";
 
-const colors = {
-  lightblue: "#3a9ad6",
-  darkblue: "#1526BD",
-  purple: "#6006D6",
-  pink: "#C616CC",
-  lazure: "#02CCAF",
-};
+// const colors = {
+//   lightblue: "#3a9ad6",
+//   darkblue: "#1526BD",
+//   purple: "#6006D6",
+//   pink: "#C616CC",
+//   lazure: "#02CCAF",
+// };
 
 const AppWrapper = styled.div`
   @font-face {
@@ -66,9 +70,7 @@ function App() {
   const officerOnEdit: IOfficer = useAppSelector(
     (state) => state.data.officerOnEdit
   );
-
   const caseOnEdit: ITheft = useAppSelector((state) => state.data.caseOnEdit);
-
   return (
     <AppWrapper>
       <Background src={background} alt="background"></Background>
@@ -83,6 +85,7 @@ function App() {
           element={<OfficerDetail {...officerOnEdit} />}
         />
         <Route path={`/cases/:id`} element={<TheftDetail {...caseOnEdit} />} />
+        <Route path={"*"} element={<ErrorPage />} />
       </Routes>
     </AppWrapper>
   );

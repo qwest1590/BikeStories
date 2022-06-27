@@ -1,20 +1,19 @@
 import React, { useEffect, useMemo, useState } from "react";
 import styled from "styled-components";
-import { Button } from "../Button/Button";
-import logo from "../../images/logo.jpg";
-import { Link, useNavigate } from "react-router-dom";
+import { Button } from "../../Button/Button";
+import logo from "../../../images/logo.jpg";
+import { Link } from "react-router-dom";
 import { LabelInput } from "../Registration/Registration";
 import { ErrorMessage } from "../Registration/Registration";
-import { useAppSelector, useTypedDispatch } from "../..";
+import { useAppSelector, useTypedDispatch } from "../../..";
 import {
   clearMesssage,
-  getAllCases,
-  getAllOfficers,
   logOut,
+  resetDataState,
   signInUser,
-} from "../../redux/actions/actions";
-import avatar from "../../images/userAvatar.jpg";
-import { Spinner } from "../Spinner/Spinner";
+} from "../../../redux/actions/actions";
+import avatar from "../../../images/userAvatar.jpg";
+import { Spinner } from "../../Spinner/Spinner";
 
 const HeaderWrapper = styled.div`
   height: 100px;
@@ -249,8 +248,6 @@ export const Header = () => {
 
   const onSubmitHandler = () => {
     dispatch(signInUser(userData));
-    dispatch(getAllOfficers());
-    dispatch(getAllCases());
   };
 
   const onCloseHandler = () => {
@@ -265,6 +262,7 @@ export const Header = () => {
 
   const onClickLogOut = () => {
     dispatch(logOut());
+    dispatch(resetDataState());
   };
 
   const nameChecking = () => {

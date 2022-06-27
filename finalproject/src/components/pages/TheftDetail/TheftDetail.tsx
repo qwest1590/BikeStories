@@ -1,26 +1,27 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
-import { useAppSelector, useTypedDispatch } from "../..";
+import { useAppSelector, useTypedDispatch } from "../../..";
 import {
   ArchieveHeader,
   ArchievePageWrapper,
   ITheft,
 } from "../TheftArchive/TheftArchive";
-import theftImg from "../../images/theft.jpg";
-import { Button } from "../Button/Button";
+import theftImg from "../../../images/theft.jpg";
+import { Button } from "../../Button/Button";
 import { useNavigate } from "react-router-dom";
 import {
   ErrorMessage,
   FormWrapper,
   LabelInput,
 } from "../Registration/Registration";
-import { Dropdown } from "../Dropdown/Dropdown";
+import { Dropdown } from "../../Dropdown/Dropdown";
 import { IOfficer } from "../Officers/Officers";
 import dayjs from "dayjs";
 import { RadioWrapper } from "../OfficerDetail/OfficerDetail";
-import { Spinner } from "../Spinner/Spinner";
+import { Spinner } from "../../Spinner/Spinner";
 import { TextArea, TextAreaWrapper } from "../ReportPage/ReportPage";
-import { EditCaseById } from "../../redux/actions/actions";
+import { EditCaseById } from "../../../redux/actions/actions";
+import { set } from "immer/dist/internal";
 
 const TheftDelailFormWrapper = styled(FormWrapper)`
   height: 1450px;
@@ -55,13 +56,18 @@ export const TheftDetail = (theft: ITheft) => {
     (officer: IOfficer) => officer.approved
   );
 
-  // console.log(approvedOfficers);
-  // const makeLabelForHiredOfficer = () => {
-  //   const index = approvedOfficers.indexOf(theftData.officer);
-  //   if (index !== -1) {
-  //     return `${approvedOfficers[index].firstName} ${approvedOfficers[index].lastName}`;
-  //   } else return "Officer Was Hired";
-  // };
+  const makeLabelForFiredOfficer = () => {
+    const ApprovedIdArr = approvedOfficers.map(
+      (officer: IOfficer) => officer._id
+    );
+    const index = ApprovedIdArr.indexOf(theftData.officer);
+    if (index !== -1) {
+      return `${approvedOfficers[index].firstName} ${approvedOfficers[index].lastName}`;
+    } else {
+      setTheftData((prevState: ITheft) => ({ ...prevState, officer: null }));
+      return "";
+    }
+  };
 
   useEffect(() => {
     messageForUser.message !== null
@@ -104,10 +110,23 @@ export const TheftDetail = (theft: ITheft) => {
   const formVerification = () => {
     if (theftData.licenseNumber === "") {
       setErrorMessage({ visible: true, message: "Licence № cannot be Empty" });
+      window.scroll(0, 0);
       return;
     }
     if (theftData.ownerFullName === "") {
       setErrorMessage({ visible: true, message: "Fullname cannot be Empty" });
+      window.scroll(0, 0);
+      return;
+    }
+    if (
+      theftData.status === "done" &&
+      (theftData.resolution == null || theftData.resolution === "")
+    ) {
+      setErrorMessage({
+        visible: true,
+        message: "Please write some resolution",
+      });
+      window.scroll(0, 0);
       return;
     }
     return true;
@@ -173,8 +192,7 @@ export const TheftDetail = (theft: ITheft) => {
             label={
               theftData.officer == null
                 ? "Choose the Officer"
-                : // : makeLabelForHiredOfficer()
-                  "sd"
+                : makeLabelForFiredOfficer()
             }
             description="Employe: "
             onChange={onChangeOfficerDropdown}
